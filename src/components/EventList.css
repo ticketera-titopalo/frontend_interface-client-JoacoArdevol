@@ -1,0 +1,3 @@
+.event-list-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(245px, 1fr)); }
+.event-list-message { color: #67645e; grid-column: 1 / -1; margin: 0; padding: 48px 20px; text-align: center; }
+.event-list-error { color: #b53d31; }

@@ -1,0 +1,12 @@
+.event-card { background: #fff; border-radius: 10px; color: #1b1b1a; display: flex; flex-direction: column; min-width: 0; overflow: hidden; text-decoration: none; transition: box-shadow .2s ease, transform .2s ease; }
+.event-card:hover, .event-card:focus-visible { box-shadow: 0 12px 28px rgba(55, 48, 39, .16); transform: translateY(-3px); }
+.event-card:focus-visible { outline: 3px solid #e86d49; outline-offset: 3px; }
+.event-card-media { height: 190px; overflow: hidden; }
+.event-card-image { display: block; height: 100%; object-fit: cover; transition: transform .3s ease; width: 100%; }
+.event-card:hover .event-card-image { transform: scale(1.04); }
+.event-card-placeholder { align-items: center; background: linear-gradient(135deg, #332752, #d3674d); color: #fff5ea; display: flex; font-size: 58px; height: 100%; justify-content: center; }
+.event-card-info { display: flex; flex: 1; flex-direction: column; gap: 7px; padding: 19px; }
+.event-card-date { color: #d65d3d; font: 500 11px 'DM Mono', monospace; letter-spacing: .3px; margin: 0; }
+.event-card-title { font-size: 18px; letter-spacing: -.5px; line-height: 1.2; margin: 0; }
+.event-card-artist, .event-card-location { color: #67645e; font-size: 13px; line-height: 1.35; margin: 0; }
+.event-card-price { color: #d65d3d; font-size: 14px; font-weight: 700; margin: auto 0 0; padding-top: 8px; }

@@ -1,0 +1,12 @@
+.login-overlay { align-items: center; background: rgba(27, 27, 26, .62); display: flex; inset: 0; justify-content: center; padding: 20px; position: fixed; z-index: 10; }
+.login-modal { background: #fff; border-radius: 10px; max-width: 430px; padding: 30px; position: relative; width: 100%; }
+.login-modal h2 { font-size: 29px; letter-spacing: -1px; margin: 0; }
+.login-modal > p:not(.purchase-kicker) { color: #67645e; line-height: 1.45; margin: 12px 0 24px; }
+.login-modal form { display: grid; gap: 14px; }
+.login-modal label { color: #494640; display: grid; font-size: 12px; font-weight: 600; gap: 6px; }
+.login-modal input { border: 1px solid #cfc9c0; border-radius: 4px; font: inherit; padding: 11px; }
+.login-modal input:focus { border-color: #d65d3d; outline: 2px solid rgba(214, 93, 61, .16); }
+.login-modal small { color: #7a766e; display: block; font-size: 11px; line-height: 1.4; margin-top: 17px; }
+.login-close { background: transparent; border: 0; color: #67645e; font-size: 28px; line-height: 1; position: absolute; right: 15px; top: 13px; }
+.simulation-code { background: #fff1ea; border-radius: 4px; color: #8f3f2d; font-size: 13px; margin: 15px 0; padding: 10px; }
+.secondary-login-button { background: transparent; border: 0; color: #67645e; font-size: 13px; padding: 5px; text-decoration: underline; }
