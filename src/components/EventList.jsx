@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import apiClient from '../api/client';
+import { getEvents } from '../services/events';
 import EventCard from './EventCard';
 import './EventList.css';
 
@@ -11,6 +11,8 @@ const featuredEvents = [
     fecha: '2026-11-14',
     lugar: 'Teatro Griego · Mendoza',
     precio: 12000,
+    demo: true,
+    sectores: [{ id: 'general', nombre: 'General', precio: 12000, stock: 50 }, { id: 'vip', nombre: 'VIP', precio: 18000, stock: 20 }],
   },
   {
     id: 'noches-de-vinilo',
@@ -19,6 +21,8 @@ const featuredEvents = [
     fecha: '2026-11-22',
     lugar: 'Nave Cultural · Mendoza',
     precio: 10000,
+    demo: true,
+    sectores: [{ id: 'general', nombre: 'General', precio: 10000, stock: 50 }, { id: 'vip', nombre: 'VIP', precio: 16000, stock: 15 }],
   },
   {
     id: 'entre-copas-y-canciones',
@@ -27,6 +31,8 @@ const featuredEvents = [
     fecha: '2026-12-06',
     lugar: 'Arena Maipú · Mendoza',
     precio: 15000,
+    demo: true,
+    sectores: [{ id: 'general', nombre: 'General', precio: 15000, stock: 40 }, { id: 'vip', nombre: 'VIP', precio: 22000, stock: 12 }],
   },
   {
     id: 'festival-cordillera',
@@ -35,6 +41,8 @@ const featuredEvents = [
     fecha: '2027-01-17',
     lugar: 'Parque San Martín · Mendoza',
     precio: 18000,
+    demo: true,
+    sectores: [{ id: 'general', nombre: 'General', precio: 18000, stock: 60 }, { id: 'vip', nombre: 'VIP', precio: 26000, stock: 18 }],
   },
   {
     id: 'tango-en-la-plaza',
@@ -43,6 +51,8 @@ const featuredEvents = [
     fecha: '2027-02-05',
     lugar: 'Plaza Independencia · Mendoza',
     precio: 8500,
+    demo: true,
+    sectores: [{ id: 'general', nombre: 'General', precio: 8500, stock: 45 }, { id: 'vip', nombre: 'VIP', precio: 13000, stock: 12 }],
   },
   {
     id: 'rock-del-oeste',
@@ -51,6 +61,8 @@ const featuredEvents = [
     fecha: '2027-02-21',
     lugar: 'Auditorio Ángel Bustelo · Mendoza',
     precio: 14500,
+    demo: true,
+    sectores: [{ id: 'general', nombre: 'General', precio: 14500, stock: 50 }, { id: 'vip', nombre: 'VIP', precio: 21000, stock: 16 }],
   },
   {
     id: 'sinfónica-al-atardecer',
@@ -59,6 +71,8 @@ const featuredEvents = [
     fecha: '2027-03-12',
     lugar: 'Teatro Independencia · Mendoza',
     precio: 11000,
+    demo: true,
+    sectores: [{ id: 'general', nombre: 'General', precio: 11000, stock: 40 }, { id: 'vip', nombre: 'VIP', precio: 17000, stock: 10 }],
   },
   {
     id: 'electro-andes',
@@ -67,6 +81,8 @@ const featuredEvents = [
     fecha: '2027-03-27',
     lugar: 'Nave Cultural · Mendoza',
     precio: 13500,
+    demo: true,
+    sectores: [{ id: 'general', nombre: 'General', precio: 13500, stock: 55 }, { id: 'vip', nombre: 'VIP', precio: 20000, stock: 15 }],
   },
 ];
 
@@ -80,9 +96,7 @@ function EventList() {
 
     async function loadEvents() {
       try {
-        // apiClient ya tiene el prefijo /api configurado en su base URL.
-        const response = await apiClient.get('/eventos');
-        const data = response.data;
+        const data = await getEvents();
         const eventList = Array.isArray(data) ? data : data?.eventos || data?.events || data?.data || [];
         if (active) setEvents(Array.isArray(eventList) ? eventList : []);
       } catch {
