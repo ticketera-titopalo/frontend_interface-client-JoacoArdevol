@@ -3,10 +3,22 @@ import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import apiClient from './api/client';
 import './App.css';
 import EventList from './components/EventList';
+import featuredEvents from './data/featuredEvents';
 import EventPurchase from './components/EventPurchase';
 import LoginModal from './components/LoginModal';
 
-function EventoDetalle({ id, event, user, onRequestLogin }) {
+function EventoDetalle({ id, event: initialEvent, user, onRequestLogin }) {
+  const [event, setEvent] = useState(initialEvent || null);
+  useEffect(() => {
+    if (event) return;
+    let active = true;
+    apiClient.get(`/eventos/${id}`).then((response) => {
+      if (active) setEvent(response.data?.evento || response.data?.event || response.data?.data || response.data);
+    }).catch(() => {
+      if (active) setEvent(featuredEvents.find((item) => item.id === id) || null);
+    });
+    return () => { active = false; };
+  }, [event, id]);
   return <EventPurchase id={id} event={event} user={user} onRequestLogin={onRequestLogin} />;
 }
 
