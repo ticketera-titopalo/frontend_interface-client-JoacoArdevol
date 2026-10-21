@@ -6,16 +6,15 @@ import './EventPurchase.css';
 const occupiedSeats = new Set(['A3', 'A7', 'B2', 'B6', 'C4', 'C8', 'D1', 'D5']);
 const seatRows = ['A', 'B', 'C', 'D'];
 const firstDefined = (...values) => values.find((value) => value !== undefined && value !== null && value !== '');
-const getSectors = (event) => {
+const sectorsFor = (event) => {
   const sectors = firstDefined(event?.sectores, event?.sectors, event?.entradas, event?.tickets, []);
   return Array.isArray(sectors) ? sectors : [];
 };
-const getSectorId = (sector, index) => firstDefined(sector?.id, sector?._id, sector?.sectorId, sector?.idSector, index);
-const isVipSector = (sector) => /vip|preferencial/i.test(String(firstDefined(sector?.nombre, sector?.name, sector?.sector, '')));
-const isAvailable = (sector) => sector?.disponible !== false && sector?.available !== false && Number(firstDefined(sector?.stock, sector?.cantidadDisponible, sector?.availableQuantity, 1)) > 0;
-const errorMessage = (error) => {
+const sectorId = (sector, index) => firstDefined(sector?.id, sector?._id, sector?.sectorId, sector?.idSector, index);
+const getErrorMessage = (error) => {
   const status = error.response?.status;
-  const message = String(error.response?.data?.message || error.response?.data?.mensaje || error.response?.data?.error || '').toLowerCase();
+  const data = error.response?.data;
+  const message = String(data?.message || data?.mensaje || data?.error || '').toLowerCase();
   if (status === 409 || status === 410 || /stock|agotad|disponib|sin entradas/.test(message)) return 'No quedan entradas disponibles en este sector.';
   if (status === 401 || status === 403) return 'Tu sesión venció. Iniciá sesión para continuar.';
   return 'No pudimos completar la compra. Intentá nuevamente en unos minutos.';
@@ -23,25 +22,26 @@ const errorMessage = (error) => {
 
 function EventPurchase({ event, id, user, onRequestLogin }) {
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const [selectedSectorIndex, setSelectedSectorIndex] = useState(0);
+  const [selectedSector, setSelectedSector] = useState(0);
   const [pending, setPending] = useState(false);
   const [notice, setNotice] = useState(null);
   const [completed, setCompleted] = useState(false);
-  const sectors = getSectors(event);
-  const sector = sectors[selectedSectorIndex];
-  const vip = isVipSector(sector);
+  const sectors = sectorsFor(event);
+  const sector = sectors[selectedSector];
   const title = firstDefined(event?.titulo, event?.title, event?.nombre, event?.name, 'Tu próxima experiencia');
   const artist = firstDefined(event?.artista, event?.artist, 'Artista a confirmar');
   const venue = firstDefined(event?.lugar, event?.venue, event?.place, 'Lugar a confirmar');
   const price = Number(firstDefined(sector?.precio, sector?.price, event?.precio, event?.price, 0));
-  const stock = Number(firstDefined(sector?.stock, sector?.cantidadDisponible, sector?.availableQuantity));
-  const available = isAvailable(sector);
-  const total = useMemo(() => selectedSeats.length * price, [selectedSeats, price]);
+  const total = useMemo(() => selectedSeats.length * price, [price, selectedSeats]);
   const money = (amount) => new Intl.NumberFormat('es-AR', { style: 'currency', currency: event?.moneda || 'ARS', maximumFractionDigits: 0 }).format(Number(amount) || 0);
-  const seatAllowed = (seat) => vip ? ['A', 'B'].includes(seat[0]) : event?.demo ? ['C', 'D'].includes(seat[0]) : true;
+  const available = (item) => item?.disponible !== false && item?.available !== false && Number(firstDefined(item?.stock, item?.cantidadDisponible, item?.availableQuantity, 1)) > 0;
+  const stock = Number(firstDefined(sector?.stock, sector?.cantidadDisponible, sector?.availableQuantity));
+  const sectorName = String(firstDefined(sector?.nombre, sector?.name, sector?.sector, '')).toLowerCase();
+  const preferential = /preferencial|vip/.test(sectorName);
+  const seatAllowed = (seatName) => preferential ? ['A', 'B'].includes(seatName[0]) : event?.demo ? ['C', 'D'].includes(seatName[0]) : true;
 
   const toggleSeat = (seat) => {
-    if (occupiedSeats.has(seat) || !seatAllowed(seat)) return;
+    if (occupiedSeats.has(seat) || !seatAllowed(seat) || !sector || !available(sector)) return;
     setSelectedSeats((current) => current.includes(seat)
       ? current.filter((item) => item !== seat)
       : current.length < 4 && (stock <= 0 || current.length < stock) ? [...current, seat] : current);
@@ -55,7 +55,7 @@ function EventPurchase({ event, id, user, onRequestLogin }) {
       setNotice({ type: 'error', text: 'Iniciá sesión para comprar tus entradas.' });
       return;
     }
-    if (!sector || !available || !selectedSeats.length) return;
+    if (!sector || !selectedSeats.length || !available(sector)) return;
     const form = new FormData(submitEvent.currentTarget);
     const cardNumber = String(form.get('cardNumber')).replace(/\s/g, '');
     setNotice(null);
@@ -70,7 +70,7 @@ function EventPurchase({ event, id, user, onRequestLogin }) {
       } else {
         await createPurchase({
           eventoId: id,
-          sectorId: getSectorId(sector, selectedSectorIndex),
+          sectorId: sectorId(sector, selectedSector),
           cantidad: selectedSeats.length,
           asientos: selectedSeats,
           comprador: {
@@ -84,7 +84,7 @@ function EventPurchase({ event, id, user, onRequestLogin }) {
       setCompleted(true);
       setNotice({ type: 'success', text: event?.demo ? '¡Compra simulada! Tus entradas quedaron reservadas en esta demostración.' : '¡Compra realizada! Ya podés ver tu entrada en Mis Entradas.' });
     } catch (error) {
-      setNotice({ type: 'error', text: errorMessage(error) });
+      setNotice({ type: 'error', text: getErrorMessage(error) });
     } finally {
       setPending(false);
     }
@@ -124,34 +124,31 @@ function EventPurchase({ event, id, user, onRequestLogin }) {
       <form className="checkout-layout" onSubmit={submitPurchase}>
         <section className="purchase-panel seat-panel">
           <div className="panel-heading"><div><p className="step-label">1. ELEGÍ SECTOR Y BUTACAS</p><h2>Mapa de ubicaciones</h2></div><span>Máximo 4</span></div>
-          <div className="sector-options" role="group" aria-label="Elegí un sector">
+          {sectors.length > 0 && <div className="sector-options" role="group" aria-label="Elegí un sector">
             {sectors.map((item, index) => {
               const name = firstDefined(item?.nombre, item?.name, item?.sector, `Sector ${index + 1}`);
               const itemPrice = firstDefined(item?.precio, item?.price, event?.precio, event?.price);
-              const itemVip = isVipSector(item);
-              const general = /general/i.test(String(name));
-              return <button key={getSectorId(item, index)} type="button" className={`sector-option ${itemVip ? 'vip-option' : ''} ${general ? 'general-option' : ''} ${selectedSectorIndex === index ? 'selected' : ''}`} disabled={!isAvailable(item) || pending} onClick={() => { setSelectedSectorIndex(index); setSelectedSeats([]); setNotice(null); }}>
-                {itemVip ? <><span className="vip-eyebrow">✦ EXPERIENCIA EXCLUSIVA</span><strong className="vip-name">VIP</strong><span className="vip-perk">Filas delanteras · ingreso prioritario</span></> : general ? <><span className="general-eyebrow">ENTRADA ESTÁNDAR</span><strong className="general-name">GENERAL</strong><span className="general-perk">Platea · filas C y D</span></> : <><strong>{name}</strong><small>Sector del evento</small></>}
-                <span className={itemVip ? 'vip-price' : general ? 'general-price' : ''}>{money(itemPrice)}</span>
-                <small>{isAvailable(item) ? (itemVip ? 'Elegir experiencia VIP' : 'Elegir sector') : 'Agotado'}</small>
+              const isVip = /preferencial|vip/i.test(String(name));
+              const isGeneral = /general/i.test(String(name));
+              return <button key={sectorId(item, index)} type="button" className={`sector-option ${isVip ? 'vip-option' : ''} ${isGeneral ? 'general-option' : ''} ${selectedSector === index ? 'selected' : ''}`} disabled={!available(item) || pending} onClick={() => { setSelectedSector(index); setSelectedSeats([]); setNotice(null); }}>
+                {isVip ? <><span className="vip-eyebrow">✦ EXPERIENCIA EXCLUSIVA</span><strong className="vip-name">VIP</strong><span className="vip-perk">Filas delanteras · ingreso prioritario</span></> : isGeneral ? <><span className="general-eyebrow">ENTRADA ESTÁNDAR</span><strong className="general-name">GENERAL</strong><span className="general-perk">Platea · filas C y D</span></> : <><strong>{name}</strong><small>Sector general</small></>}
+                <span className={isVip ? 'vip-price' : isGeneral ? 'general-price' : ''}>{money(itemPrice)}</span><small>{available(item) ? (isVip ? 'Elegir experiencia VIP' : isGeneral ? 'Elegir sector General' : 'Elegir sector') : 'Agotado'}</small>
               </button>;
             })}
-          </div>
-          {vip && <div className="sector-benefit vip-benefit"><strong>Ubicación VIP</strong><ul><li>Filas A y B, las más cercanas al escenario</li><li>Ingreso prioritario al evento</li></ul></div>}
-          {event?.demo && !vip && sector && <div className="sector-benefit"><strong>Sector General</strong><p>Butacas en filas C y D.</p></div>}
+          </div>}
+          {sector && (preferential || event?.demo) && <div className={`sector-benefit ${preferential ? 'vip-benefit' : ''}`}><strong>{preferential ? 'Ubicación VIP' : 'Sector General'}</strong>{preferential ? <ul><li>Filas A y B, las más cercanas al escenario</li><li>Ingreso prioritario al evento</li></ul> : <p>Butacas en filas C y D.</p>}</div>}
           <div className="stage"><span>ESCENARIO</span><small>FRENTE DEL ESCENARIO</small></div>
           <div className="map-orientation"><strong>PLATEA</strong><span>Filas A y B al frente</span></div>
-          {sectors.length ? <div className="seat-map" aria-label="Mapa de ubicaciones: escenario al frente, cuatro butacas a cada lado del pasillo">
-            {seatRows.map((row) => <div className={`seat-row ${vip && ['A', 'B'].includes(row) ? 'vip-row' : ''}`} key={row}>
+          {sectors.length > 0 ? <div className="seat-map" aria-label="Mapa de ubicaciones: escenario al frente, cuatro butacas a cada lado del pasillo">
+            {seatRows.map((row) => <div className={`seat-row ${preferential && ['A', 'B'].includes(row) ? 'vip-row' : ''}`} key={row}>
               <span className="seat-row-label" aria-hidden="true">Fila {row}</span>
               {Array.from({ length: 8 }, (_, index) => {
-                const seat = `${row}${index + 1}`;
-                const restricted = !seatAllowed(seat);
-                const occupied = occupiedSeats.has(seat);
-                const selected = selectedSeats.includes(seat);
-                const button = <button key={seat} type="button" className={`seat ${occupied || restricted ? 'occupied' : ''} ${selected ? 'selected' : ''}`} disabled={occupied || restricted || pending || !available} onClick={() => toggleSeat(seat)} aria-pressed={selected} aria-label={`${seat}${restricted ? ', no disponible en este sector' : occupied ? ', ocupado' : ''}`}>{seat}</button>;
-                return index === 4 ? [<span className="seat-aisle" key={`${seat}-aisle`} aria-hidden="true">PASILLO</span>, button] : button;
-              })}
+                const seatName = `${row}${index + 1}`;
+                const restricted = !seatAllowed(seatName);
+                const occupied = occupiedSeats.has(seatName);
+                const selected = selectedSeats.includes(seatName);
+                return <button key={seatName} type="button" className={`seat ${occupied || restricted ? 'occupied' : ''} ${selected ? 'selected' : ''}`} disabled={occupied || restricted || pending || !available(sector)} onClick={() => toggleSeat(seatName)} aria-pressed={selected} aria-label={`${seatName}${restricted ? ', no disponible en este sector' : occupied ? ', ocupado' : ''}`}>{seatName}</button>;
+              }).flatMap((seatButton, index) => index === 4 ? [<span className="seat-aisle" key="aisle" aria-hidden="true">PASILLO</span>, seatButton] : [seatButton])}
             </div>)}
           </div> : <p className="event-list-message">Este evento no tiene sectores disponibles para comprar.</p>}
           <div className="seat-legend"><span><i className="available" />Disponible</span><span><i className="selected" />Tu selección</span><span><i className="occupied" />No disponible</span></div>
@@ -161,7 +158,7 @@ function EventPurchase({ event, id, user, onRequestLogin }) {
         <aside className="checkout-side">
           <section className="purchase-panel order-summary">
             <p className="step-label">RESUMEN</p><h2>Tu compra</h2>
-            <p>{sector ? firstDefined(sector.nombre, sector.name, sector.sector, `Sector ${selectedSectorIndex + 1}`) : 'No hay sectores disponibles'}</p>
+            <p>{sector ? firstDefined(sector.nombre, sector.name, sector.sector, `Sector ${selectedSector + 1}`) : 'No hay sectores disponibles'}</p>
             <p>{selectedSeats.length ? `Asientos: ${selectedSeats.join(', ')}` : 'Todavía no elegiste asientos'}</p>
             <div><span>{selectedSeats.length} entrada{selectedSeats.length === 1 ? '' : 's'}</span><strong>{money(total)}</strong></div>
           </section>
@@ -175,7 +172,7 @@ function EventPurchase({ event, id, user, onRequestLogin }) {
             <label>Tarjeta de crédito o débito<input required name="cardNumber" inputMode="numeric" autoComplete="cc-number" placeholder="0000 0000 0000 0000" pattern="[0-9 ]{15,19}" /></label>
             <div className="form-grid"><label>Vencimiento<input required name="expiration" inputMode="numeric" placeholder="MM/AA" pattern="(0[1-9]|1[0-2])/[0-9]{2}" /></label><label>CVV<input required name="cvv" inputMode="numeric" autoComplete="cc-csc" placeholder="123" pattern="[0-9]{3,4}" /></label></div>
             {notice && <p className={notice.type === 'error' ? 'payment-error' : 'payment-success'} role={notice.type === 'error' ? 'alert' : 'status'}>{notice.text}</p>}
-            <button className="checkout-button" type="submit" disabled={!selectedSeats.length || !sector || !available || pending}>{pending ? 'Procesando compra…' : `Confirmar compra · ${money(total)}`}</button>
+            <button className="checkout-button" type="submit" disabled={!selectedSeats.length || !sector || !available(sector) || pending}>{pending ? 'Procesando compra…' : `Confirmar compra · ${money(total)}`}</button>
             {event?.demo && <small>Simulación local: 4000 0000 0000 0002 rechaza la compra. Los datos de pago no se guardan.</small>}
           </section>
         </aside>
