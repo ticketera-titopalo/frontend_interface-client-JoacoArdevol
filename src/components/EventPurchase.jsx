@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import apiClient from '../api/client';
+import { createPurchase } from '../services/purchases';
 import './EventPurchase.css';
 
 const occupiedSeats = new Set(['A3', 'A7', 'B2', 'B6', 'C4', 'C8', 'D1', 'D5']);
@@ -41,7 +41,7 @@ function EventPurchase({ event, id, user, onRequestLogin }) {
   const seatAllowed = (seatName) => preferential ? ['A', 'B'].includes(seatName[0]) : event?.demo ? ['C', 'D'].includes(seatName[0]) : true;
 
   const toggleSeat = (seat) => {
-    if (occupiedSeats.has(seat)) return;
+    if (occupiedSeats.has(seat) || !seatAllowed(seat) || !sector || !available(sector)) return;
     setSelectedSeats((current) => current.includes(seat)
       ? current.filter((item) => item !== seat)
       : current.length < 4 && (stock <= 0 || current.length < stock) ? [...current, seat] : current);
@@ -68,7 +68,7 @@ function EventPurchase({ event, id, user, onRequestLogin }) {
           return;
         }
       } else {
-        await apiClient.post('/compras', {
+        await createPurchase({
           eventoId: id,
           sectorId: sectorId(sector, selectedSector),
           cantidad: selectedSeats.length,
@@ -79,7 +79,7 @@ function EventPurchase({ event, id, user, onRequestLogin }) {
             dni: form.get('dni'),
             email: form.get('email'),
           },
-        }, user.token ? { headers: { Authorization: `Bearer ${user.token}` } } : undefined);
+        }, user.token);
       }
       setCompleted(true);
       setNotice({ type: 'success', text: event?.demo ? '¡Compra simulada! Tus entradas quedaron reservadas en esta demostración.' : '¡Compra realizada! Ya podés ver tu entrada en Mis Entradas.' });
@@ -139,7 +139,7 @@ function EventPurchase({ event, id, user, onRequestLogin }) {
           {sector && (preferential || event?.demo) && <div className={`sector-benefit ${preferential ? 'vip-benefit' : ''}`}><strong>{preferential ? 'Ubicación VIP' : 'Sector General'}</strong>{preferential ? <ul><li>Filas A y B, las más cercanas al escenario</li><li>Ingreso prioritario al evento</li></ul> : <p>Butacas en filas C y D.</p>}</div>}
           <div className="stage"><span>ESCENARIO</span><small>FRENTE DEL ESCENARIO</small></div>
           <div className="map-orientation"><strong>PLATEA</strong><span>Filas A y B al frente</span></div>
-          <div className="seat-map" aria-label="Mapa de ubicaciones: escenario al frente, cuatro butacas a cada lado del pasillo">
+          {sectors.length > 0 ? <div className="seat-map" aria-label="Mapa de ubicaciones: escenario al frente, cuatro butacas a cada lado del pasillo">
             {seatRows.map((row) => <div className={`seat-row ${preferential && ['A', 'B'].includes(row) ? 'vip-row' : ''}`} key={row}>
               <span className="seat-row-label" aria-hidden="true">Fila {row}</span>
               {Array.from({ length: 8 }, (_, index) => {
@@ -150,7 +150,7 @@ function EventPurchase({ event, id, user, onRequestLogin }) {
                 return <button key={seatName} type="button" className={`seat ${occupied || restricted ? 'occupied' : ''} ${selected ? 'selected' : ''}`} disabled={occupied || restricted || pending || !available(sector)} onClick={() => toggleSeat(seatName)} aria-pressed={selected} aria-label={`${seatName}${restricted ? ', no disponible en este sector' : occupied ? ', ocupado' : ''}`}>{seatName}</button>;
               }).flatMap((seatButton, index) => index === 4 ? [<span className="seat-aisle" key="aisle" aria-hidden="true">PASILLO</span>, seatButton] : [seatButton])}
             </div>)}
-          </div>
+          </div> : <p className="event-list-message">Este evento no tiene sectores disponibles para comprar.</p>}
           <div className="seat-legend"><span><i className="available" />Disponible</span><span><i className="selected" />Tu selección</span><span><i className="occupied" />No disponible</span></div>
           {!selectedSeats.length && <p className="selection-hint">Seleccioná al menos un asiento para continuar.</p>}
         </section>

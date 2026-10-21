@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import apiClient from '../api/client';
+import { getEvents } from '../services/events';
 import EventCard from './EventCard';
 import featuredEvents from '../data/featuredEvents';
 import './EventList.css';
@@ -14,9 +14,7 @@ function EventList() {
 
     async function loadEvents() {
       try {
-        // apiClient ya tiene el prefijo /api configurado en su base URL.
-        const response = await apiClient.get('/eventos');
-        const data = response.data;
+        const data = await getEvents();
         const eventList = Array.isArray(data) ? data : data?.eventos || data?.events || data?.data || [];
         if (active) setEvents(Array.isArray(eventList) ? eventList : []);
       } catch {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
-import apiClient from './api/client';
+import { getApiStatus } from './services/events';
 import './App.css';
 import EventList from './components/EventList';
 import featuredEvents from './data/featuredEvents';
@@ -28,8 +28,8 @@ function AppContent({ user, onRequestLogin, onLogout }) {
   const location = useLocation();
 
   useEffect(() => {
-    apiClient.get('/status')
-      .then((response) => { setStatusData(response.data); setStatus('ok'); })
+    getApiStatus()
+      .then((data) => { setStatusData(data); setStatus('ok'); })
       .catch(() => setStatus('error'));
   }, []);
 
