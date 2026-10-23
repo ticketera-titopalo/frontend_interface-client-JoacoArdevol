@@ -3,6 +3,7 @@ import { BrowserRouter, Link, Navigate, Route, Routes, useLocation, useParams } 
 import './App.css';
 import RequireAuth from './components/RequireAuth';
 import EventList from './components/EventList';
+import featuredEvents from './data/featuredEvents';
 import EventPurchase from './components/EventPurchase';
 import { SessionProvider } from './hooks/SessionContext';
 import { useSession } from './hooks/useSession';
@@ -85,8 +86,20 @@ function HomeView() {
 function EventDetailView() {
   const location = useLocation();
   const { id } = useParams();
-  const event = location.state?.event;
+  const [event, setEvent] = useState(location.state?.event || null);
   const { user } = useSession();
+  useEffect(() => {
+    if (event) return undefined;
+    let active = true;
+    import('./services/apiClient').then(({ default: apiClient }) => apiClient.get(`/eventos/${id}`))
+      .then((response) => {
+        if (active) setEvent(response.data?.evento || response.data?.event || response.data?.data || response.data);
+      })
+      .catch(() => {
+        if (active) setEvent(featuredEvents.find((item) => String(item.id) === id) || null);
+      });
+    return () => { active = false; };
+  }, [event, id]);
   return <EventPurchase id={id} event={event} user={user} />;
 }
 

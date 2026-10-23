@@ -1,74 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getEvents } from '../services/events';
 import EventCard from './EventCard';
+import featuredEvents from '../data/featuredEvents';
 import './EventList.css';
-
-const featuredEvents = [
-  {
-    id: 'musica-bajo-las-estrellas',
-    titulo: 'Música bajo las estrellas',
-    artista: 'Artistas invitados',
-    fecha: '2026-11-14',
-    lugar: 'Teatro Griego · Mendoza',
-    precio: 12000,
-  },
-  {
-    id: 'noches-de-vinilo',
-    titulo: 'Noches de vinilo',
-    artista: 'DJ invitados',
-    fecha: '2026-11-22',
-    lugar: 'Nave Cultural · Mendoza',
-    precio: 10000,
-  },
-  {
-    id: 'entre-copas-y-canciones',
-    titulo: 'Entre copas y canciones',
-    artista: 'Artistas invitados',
-    fecha: '2026-12-06',
-    lugar: 'Arena Maipú · Mendoza',
-    precio: 15000,
-  },
-  {
-    id: 'festival-cordillera',
-    titulo: 'Festival Cordillera',
-    artista: 'Bandas en vivo',
-    fecha: '2027-01-17',
-    lugar: 'Parque San Martín · Mendoza',
-    precio: 18000,
-  },
-  {
-    id: 'tango-en-la-plaza',
-    titulo: 'Tango en la plaza',
-    artista: 'Orquesta Ciudad de Mendoza',
-    fecha: '2027-02-05',
-    lugar: 'Plaza Independencia · Mendoza',
-    precio: 8500,
-  },
-  {
-    id: 'rock-del-oeste',
-    titulo: 'Rock del Oeste',
-    artista: 'Las Voces del Sur',
-    fecha: '2027-02-21',
-    lugar: 'Auditorio Ángel Bustelo · Mendoza',
-    precio: 14500,
-  },
-  {
-    id: 'sinfónica-al-atardecer',
-    titulo: 'Sinfónica al atardecer',
-    artista: 'Orquesta Filarmónica',
-    fecha: '2027-03-12',
-    lugar: 'Teatro Independencia · Mendoza',
-    precio: 11000,
-  },
-  {
-    id: 'electro-andes',
-    titulo: 'Electro Andes',
-    artista: 'Nébula y artistas invitados',
-    fecha: '2027-03-27',
-    lugar: 'Nave Cultural · Mendoza',
-    precio: 13500,
-  },
-];
 
 function EventList() {
   const [events, setEvents] = useState([]);
