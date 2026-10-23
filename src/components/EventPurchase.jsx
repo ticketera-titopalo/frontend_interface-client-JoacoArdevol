@@ -117,7 +117,7 @@ function EventPurchase({ event, id, user, onRequestLogin }) {
       <header className="purchase-header">
         <p className="purchase-kicker">COMPRAR ENTRADAS</p>
         <h1>{title}</h1>
-        <p>{artist} · {venue} · Comprás como {user.name}</p>
+        <p>{artist} · {venue} · Comprás como {user.name || user.email}</p>
         {event?.demo && <p className="demo-label">Modo demostración · usá 4111 1111 1111 1111 para aprobar</p>}
       </header>
 
