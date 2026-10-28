@@ -114,7 +114,7 @@ function AppRoutes() {
       <Route path="/" element={<HomeView />} />
       <Route path="/login" element={<LoginView />} />
       <Route path="/register" element={<RegisterView />} />
-      <Route path="/eventos/:id" element={<RequireAuth><EventDetailView /></RequireAuth>} />
+      <Route path="/eventos/:id" element={<EventDetailView />} />
       <Route path="/admin/*" element={<RequireAuth admin><AdminView /></RequireAuth>} />
       <Route path="*" element={<Navigate to="/" state={{ from: location }} replace />} />
     </Routes>

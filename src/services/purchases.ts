@@ -1,20 +1,22 @@
 import apiClient from './apiClient';
 
 export interface PurchasePayload {
-  eventoId: string;
-  sectorId: string | number;
-  cantidad: number;
-  asientos: string[];
-  comprador: {
-    nombre: FormDataEntryValue | null;
-    apellido: FormDataEntryValue | null;
-    dni: FormDataEntryValue | null;
-    email: FormDataEntryValue | null;
-  };
+  concert_id: number;
+  quantity: number;
 }
 
-export async function createPurchase(payload: PurchasePayload, token?: string) {
-  return apiClient.post('/compras', payload, token ? {
-    headers: { Authorization: `Bearer ${token}` },
-  } : undefined);
+export interface PurchaseResponse {
+  message: string;
+  user_id: number;
+  concierto: unknown;
+  quantity: number;
+  total_price: number;
+  nuevo_stock: number;
+  purchase_id: number;
+  tickets_created: number;
+}
+
+export async function createPurchase(payload: PurchasePayload) {
+  const response = await apiClient.post<PurchaseResponse>('/purchase', payload);
+  return response.data;
 }

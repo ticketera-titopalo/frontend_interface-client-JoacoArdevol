@@ -155,3 +155,14 @@
 .sector-option .general-perk { color: #617668; }
 .sector-option .general-price { color: #315a3b; }
 .sector-option.general-option small { color: #587260; }
+
+.concert-purchase-panel { display: grid; gap: 14px; margin: 0 auto; max-width: 760px; }
+.concert-purchase-panel h2 { font-size: 28px; margin: 0; }
+.concert-purchase-panel h2 small { color: #777168; font-size: 13px; font-weight: 400; }
+.concert-stock, .purchase-success-detail { color: #67645e; font-size: 13px; margin: 8px 0 0; }
+.concert-purchase-form { align-items: end; display: flex; flex-wrap: wrap; gap: 12px; }
+.concert-purchase-form label { color: #494640; display: grid; font-size: 12px; font-weight: 600; gap: 6px; }
+.concert-purchase-form input { border: 1px solid #cfc9c0; border-radius: 4px; font: inherit; padding: 12px; width: 110px; }
+.concert-purchase-form .checkout-button { min-width: 180px; }
+.login-prompt { color: #67645e; font-size: 13px; margin: 0; }
+.login-prompt a { color: #b84c31; font-weight: 700; }

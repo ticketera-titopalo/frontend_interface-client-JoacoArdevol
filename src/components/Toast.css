@@ -1,0 +1,5 @@
+.app-toast { align-items: center; border-radius: 8px; display: flex; gap: 14px; justify-content: space-between; line-height: 1.5; margin: 16px 0; padding: 13px 16px; }
+.app-toast.success { background: #eaf6ed; color: #246b38; }
+.app-toast.error { background: #fff0ed; color: #a33126; }
+.app-toast.info { background: #eef3fa; color: #284e77; }
+.app-toast button { background: transparent; border: 0; color: inherit; cursor: pointer; font-size: 20px; line-height: 1; }
