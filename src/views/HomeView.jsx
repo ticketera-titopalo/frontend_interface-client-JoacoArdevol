@@ -34,7 +34,7 @@ function HomeView() {
     <main className="app-shell">
       <nav className="navbar" aria-label="Navegación principal">
         <Link className="brand" to="/" aria-label="Entrada, inicio"><span className="brand-mark">E</span><span>entrada<span className="brand-dot">.</span></span></Link>
-        <div className="nav-links"><a href="#eventos">Eventos</a><a href="#experiencias">Experiencias</a><a href="#ayuda">Ayuda</a>{user && <Link to="/mis-entradas">Mis Entradas</Link>}</div>
+        <div className="nav-links"><a href="#eventos">Eventos</a><a href="#experiencias">Experiencias</a><a href="#ayuda">Ayuda</a>{user && <><Link to="/mis-entradas">Mis Entradas</Link><Link to="/perfil">Mi perfil</Link></>}</div>
         {user
           ? <button className="account-button" type="button" onClick={logout}>Cerrar sesión <span>↗</span></button>
           : <Link className="account-button" to="/login">Mi cuenta <span>↗</span></Link>}
