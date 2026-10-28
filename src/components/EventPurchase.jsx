@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPurchase } from '../services/purchases';
 import Toast from './Toast';
@@ -14,9 +14,9 @@ function EventPurchase({ event, id, user }) {
   const pendingRef = useRef(false);
   const [notice, setNotice] = useState(null);
   const [purchase, setPurchase] = useState(null);
-  const [stock, setStock] = useState(() => eventStock(event));
-  useEffect(() => { setStock(eventStock(event)); }, [event]);
+  const [stockUpdate, setStockUpdate] = useState(null);
   const concertId = getConcertId(event, id);
+  const stock = stockUpdate?.id === String(concertId) ? stockUpdate.value : eventStock(event);
   const title = firstDefined(event?.titulo, event?.title, event?.nombre, event?.name, 'Concierto');
   const artist = firstDefined(event?.artista, event?.artist, 'Artista a confirmar');
   const venue = firstDefined(event?.lugar, event?.venue, event?.place, 'Lugar a confirmar');
@@ -36,13 +36,13 @@ function EventPurchase({ event, id, user }) {
     try {
       const result = await createPurchase({ concert_id: concertId, quantity });
       setPurchase(result);
-      setStock(Number(result.nuevo_stock));
+      setStockUpdate({ id: String(concertId), value: Number(result.nuevo_stock) });
       setNotice({ type: 'success', text: `¡Compra realizada! Ya podés ver tu entrada en Mis Entradas. Compra #${result.purchase_id}; entradas creadas: ${result.tickets_created}.` });
     } catch (error) {
       const status = error.response?.status;
       const data = error.response?.data || {};
       if (status === 400 && data.stock_disponible !== undefined) {
-        setStock(Number(data.stock_disponible));
+        setStockUpdate({ id: String(concertId), value: Number(data.stock_disponible) });
         setNotice({ type: 'error', text: `Stock insuficiente. Quedan ${data.stock_disponible} entradas disponibles.` });
       } else if (status === 400) {
         setNotice({ type: 'error', text: 'La cantidad solicitada no es válida. Ingresá al menos 1 entrada.' });
