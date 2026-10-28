@@ -80,6 +80,7 @@ function EventPurchase({ event, id, user }) {
       <Toast type={notice?.type} onClose={() => setNotice(null)}>{notice?.text}</Toast>
       {!user && <p className="login-prompt">Para comprar, <Link to="/login" state={{ from: `/eventos/${id}` }}>iniciá sesión</Link> o <Link to="/register">creá una cuenta</Link>.</p>}
       {purchase && <p className="purchase-success-detail">Total: {money(purchase.total_price)} · Stock actualizado: {stock}</p>}
+      {purchase && <Link className="purchase-tickets-link" to={`/mis-entradas?purchase_id=${purchase.purchase_id}`}>Ver mis entradas de esta compra</Link>}
     </section>
   </main>;
 }

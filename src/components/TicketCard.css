@@ -1,0 +1,9 @@
+.ticket-card { align-items: center; background: #fff; border: 1px solid #e2ddd4; border-radius: 10px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; padding: 22px; }
+.ticket-card h2 { font-size: 20px; margin: 0 0 6px; }
+.ticket-card > div:first-child > p:last-child { color: #67645e; font-size: 13px; margin: 0; }
+.ticket-card-label { color: #d65d3d; font: 500 10px 'DM Mono', monospace; letter-spacing: 1px; margin: 0 0 7px; }
+.ticket-code-block { display: grid; gap: 5px; }
+.ticket-code-block span { color: #67645e; font-size: 11px; }
+.ticket-code-block strong { color: #292927; font: 700 18px 'DM Mono', monospace; letter-spacing: 1px; }
+.ticket-status { background: #eaf6ed; border-radius: 20px; color: #246b38; font-size: 11px; margin: 0; padding: 6px 11px; }
+.ticket-status.used { background: #eeece7; color: #67645e; }
