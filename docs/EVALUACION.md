@@ -1,21 +1,21 @@
 <!-- evaluacion:inicio -->
 # Evaluación — ticketera-titopalo/frontend_interface-client-JoacoArdevol
 
-> Documento **generado automáticamente** por la cátedra de Programación III (RepoSense + análisis de calidad). **No editar a mano**: se regenera en cada evaluación.
+> Documento **generado automáticamente** por la cátedra de Programación III (RepoSense + análisis de calidad + constancia). **No editar a mano**: se regenera en cada evaluación.
 > Rama evaluada: `main`. Análisis **heurístico** (regex + métricas): es una criba para orientar la revisión, **no una nota**.
-> Generado: 2026-10-17.
+> Generado: 2026-10-28.
 
 ## 1. Veredicto
 
 | Aspecto | Resultado |
 |---|---|
 | Tipo de proyecto | frontend |
-| Índice de calidad de servicios | **45/100** (mínimo 60) |
-| Criterios cumplidos | **11/15** |
+| Índice de calidad de servicios | **25/100** (mínimo 60) |
+| Criterios cumplidos | **12/15** |
 | Aprobado (semáforo) | **NO** |
-| Código (LOC) | 586 |
-| Archivos de código | 10 |
-| Capas detectadas | vistas, servicios |
+| Código (LOC) | 864 |
+| Archivos de código | 23 |
+| Capas detectadas | vistas, servicios, estado |
 
 > **Aprobado** exige cumplir **todos** los criterios del semáforo. No es una nota: sirve para ordenar y priorizar la revisión.
 
@@ -23,11 +23,21 @@
 
 | Autor | Commits | Código (LOC) | Tests (LOC) | Docs (LOC) | Días activos | % del código |
 |---|---:|---:|---:|---:|---:|---:|
-| joaquin ardevol | 5 | 841 | 0 | 0 | 5 | 100% |
+| joaquin ardevol | 7 | 1,174 | 0 | 8 | 7 | 100% |
 
 > _El LOC de autoría lo calcula RepoSense sobre el historial y puede diferir del LOC de código del análisis de calidad (que mira solo el estado de `main`)._
 
-## 3. Aspectos evaluados
+## 3. Constancia (IC) — todas las ramas
+
+> El IC mide **cuándo** se trabajó (sesiones por semana, pausas y recencia), no cuánto ni con qué calidad. Se calcula sobre **todas las ramas** de todos los repositorios del alumno, no sólo `main`.
+
+| Alumno | Sesiones | Cumplimiento | Pausa | Recencia | IC | Nivel | Para subir de nivel |
+|---|--:|--:|--:|--:|--:|--|--|
+| joaquin ardevol | 4 | 18% | 42 d | 50% | **19** | No aprueba | Cumplimiento 18% (mín. 50%); Pausa 42 d (máx. 10 d) |
+
+> Para aprobar el IC: **2 sesiones por semana** sostenidas, sin pausas mayores a **10 días** y con actividad en las **últimas 2 semanas**. Se excluyen merges, bots y al docente. Zona horaria UTC-3.
+
+## 4. Aspectos evaluados
 
 Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuando el resultado está en rojo, se agregan preguntas para **investigar la causa** (no hay recetas: entender el porqué es parte de la evaluación).
 
@@ -35,7 +45,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Un resumen numérico (0-100) que combina todas las señales y métricas del análisis, con topes duros por duplicación.
 - **Por qué importa:** Ordena y prioriza la revisión: un índice bajo indica varias señales que conviene mirar juntas.
-- **Tu resultado:** índice **45/100** _(mínimo 60)_
+- **Tu resultado:** índice **25/100** _(mínimo 60)_
 - **Para investigar la causa:**
     - ¿En qué momento del proyecto se concentraron los problemas (arranque, integración de partes, cierre)?
     - ¿El índice bajó por muchas señales chicas o por una o dos graves?
@@ -45,7 +55,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Porcentaje de bloques de código repetidos (similitud) en el repositorio.
 - **Por qué importa:** Cada copia se mantiene por separado: un arreglo hay que repetirlo y los defectos se multiplican.
-- **Tu resultado:** **0.0%** de duplicación _(máximo 15%)_
+- **Tu resultado:** **4.2%** de duplicación _(máximo 15%)_
 
 ### 3. Secretos hardcodeados (SEC) — OK
 
@@ -63,7 +73,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Si el código está separado en capas reconocibles (backend: presentación / lógica / datos; frontend: vistas / servicios / estado).
 - **Por qué importa:** Sin separación, cada archivo hace de todo y cualquier cambio toca varios lugares a la vez.
-- **Tu resultado:** **2** capa(s) detectada(s): vistas, servicios _(mínimo 2 capas (a partir de 150 LOC))_
+- **Tu resultado:** **3** capa(s) detectada(s): vistas, servicios, estado _(mínimo 2 capas (a partir de 150 LOC))_
 
 ### 6. Acceso a datos dentro del componente (HTTP) — OK
 
@@ -99,7 +109,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Complejidad ciclomática: cantidad de caminos posibles dentro de una función (condicionales, bucles, casos).
 - **Por qué importa:** Muchos caminos = difícil de seguir y de probar; suelen esconderse casos sin cubrir.
-- **Tu resultado:** **4** bloque(s) de complejidad alta _(máximo 5 por 1000 LOC (tenés 586 LOC))_
+- **Tu resultado:** **8** bloque(s) de complejidad alta _(máximo 5 por 1000 LOC (tenés 864 LOC))_
 - **Para investigar la causa:**
     - ¿Se agregaron condiciones a medida que aparecían casos nuevos?
     - ¿Se probaron todos los caminos o solo el caso principal?
@@ -109,7 +119,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Tamaño de las funciones/métodos y cantidad de parámetros.
 - **Por qué importa:** Una función que hace varias cosas cuesta leerla, nombrarla y reutilizarla.
-- **Tu resultado:** **1** función/método(s) largos o con muchos parámetros _(máximo 10 por 1000 LOC)_
+- **Tu resultado:** **4** función/método(s) largos o con muchos parámetros _(máximo 10 por 1000 LOC)_
 
 ### 13. Acoplamiento alto (Acop) — OK
 
@@ -127,23 +137,33 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
     - ¿Qué parte del sistema es más riesgosa de tocar y por qué no está cubierta?
     - ¿Se sabe qué se rompería si algo cambiara?
 
-### 15. Vistas del frontend (Vistas) — A REVISAR
+### 15. Vistas del frontend (Vistas) — OK
 
 - **Qué mide:** Cantidad de vistas/componentes de pantalla del frontend.
 - **Por qué importa:** El frontend se mide por pantallas: pocas vistas sugiere poca cobertura de la interfaz pedida.
-- **Tu resultado:** **6** vista(s)/componente(s) _(mínimo 8)_
-- **Para investigar la causa:**
-    - ¿La app cubre todas las pantallas del enunciado?
-    - ¿Hay pantallas que resuelven todo con una única vista?
-    - ¿Se priorizó la funcionalidad por sobre la navegación?
+- **Tu resultado:** **10** vista(s)/componente(s) _(mínimo 8)_
 
-## 4. Anexo: dónde mirar
+## 5. Qué falta para aprobar
+
+Criterios que hoy están en rojo y qué habría que cambiar para alcanzar el nivel de aprobación (perfil `exigente`):
+
+| Criterio | Resultado actual | Meta | Qué arreglar |
+|---|---|---|---|
+| Índice de calidad de servicios (indice) | índice **25/100** | mínimo 60 | Subir el índice a ≥60 corrigiendo primero las señales de más peso: duplicación, secretos, SQL y capas. |
+| Complejidad alta (Compl) | **8** bloque(s) de complejidad alta | máximo 5 por 1000 LOC (tenés 864 LOC) | Extraer ramas y reglas a funciones con nombre propio; ≤5 bloques por 1000 LOC. |
+| Tests automatizados (Tests) | **0** archivo(s) de test | mínimo 5 | Agregar tests de los flujos principales hasta llegar a 5 archivos. |
+
+> Empezá por las señales de seguridad (**SEC**, **SQL**) y por la **duplicación**: son las que más pesan en el índice y las más rápidas de verificar a ojo.
+
+## 6. Anexo: dónde mirar
 
 Archivos donde el análisis encontró cada señal en rojo (sin número de línea, a propósito):
 
-**Complejidad alta (Compl)** — 2 archivo(s):
+**Complejidad alta (Compl)** — 4 archivo(s):
 - `src/App.jsx`
 - `src/components/EventList.jsx`
+- `src/services/httpError.ts`
+- `src/views/LoginView.jsx`
 
 ---
 _Informe generado por la cátedra. Los umbrales corresponden al perfil `exigente`. Ante dudas, revisá el archivo señalado y el criterio en `CRITERIOS-CALIDAD.md`._
