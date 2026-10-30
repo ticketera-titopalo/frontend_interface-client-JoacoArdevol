@@ -1,4 +1,4 @@
-import { BrowserRouter, Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 import RequireAuth from './components/RequireAuth';
 import { SessionProvider } from './hooks/SessionContext';
@@ -7,10 +7,7 @@ import RegisterView from './views/RegisterView';
 import HomeView from './views/HomeView';
 import ConcertDetailView from './views/ConcertDetailView';
 import MyTicketsView from './views/MyTicketsView';
-
-function AdminView() {
-  return <main className="auth-page"><section className="auth-card"><p className="purchase-kicker">ADMINISTRACIÓN</p><h1>Panel de administración</h1><p>Acceso autorizado para administradores.</p><Link className="auth-back" to="/">Volver a eventos</Link></section></main>;
-}
+import ValidateView from './views/ValidateView';
 
 function AppRoutes() {
   const location = useLocation();
@@ -21,7 +18,8 @@ function AppRoutes() {
       <Route path="/register" element={<RegisterView />} />
       <Route path="/eventos/:id" element={<ConcertDetailView />} />
       <Route path="/mis-entradas" element={<RequireAuth><MyTicketsView /></RequireAuth>} />
-      <Route path="/admin/*" element={<RequireAuth admin><AdminView /></RequireAuth>} />
+      <Route path="/admin" element={<RequireAuth admin><Navigate to="/admin/validar" replace /></RequireAuth>} />
+      <Route path="/admin/validar" element={<RequireAuth admin><ValidateView /></RequireAuth>} />
       <Route path="*" element={<Navigate to="/" state={{ from: location }} replace />} />
     </Routes>
   );
