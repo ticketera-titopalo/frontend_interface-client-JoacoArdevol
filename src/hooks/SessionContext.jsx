@@ -28,10 +28,15 @@ export function SessionProvider({ children }) {
       throw new Error('La respuesta del servidor no contiene una sesión válida.');
     }
 
+    const wallet = result.user.wallet || result.user.billetera || {};
     const user = {
       id: result.user.id ?? result.user._id,
       email: result.user.email || email,
       role: result.user.role || 'user',
+      nombre: result.user.nombre || result.user.name || wallet.nombre || wallet.name,
+      alias: result.user.alias || wallet.alias,
+      cvu: result.user.cvu || wallet.cvu,
+      wallet_id: result.user.wallet_id || wallet.wallet_id || wallet.id,
     };
     if (user.id === undefined || !user.email) {
       throw new Error('La respuesta del servidor no contiene un usuario válido.');

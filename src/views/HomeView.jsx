@@ -34,7 +34,7 @@ function HomeView() {
     <main className="app-shell">
       <nav className="navbar" aria-label="Navegación principal">
         <Link className="brand" to="/" aria-label="Entrada, inicio"><span className="brand-mark">E</span><span>entrada<span className="brand-dot">.</span></span></Link>
-        <div className="nav-links"><a href="#eventos">Eventos</a><a href="#experiencias">Experiencias</a><a href="#ayuda">Ayuda</a>{user && <Link to="/mis-entradas">Mis Entradas</Link>}</div>
+        <div className="nav-links"><a href="#eventos">Eventos</a><a href="#experiencias">Experiencias</a><a href="#ayuda">Ayuda</a>{user && <Link to="/mis-entradas">Mis Entradas</Link>}{user && <Link to="/billetera/pagar">Pagar con QR</Link>}{user && <Link to="/billetera/cobrar">Cobrar</Link>}</div>
         {user
           ? <button className="account-button" type="button" onClick={logout}>Cerrar sesión <span>↗</span></button>
           : <Link className="account-button" to="/login">Mi cuenta <span>↗</span></Link>}
@@ -46,6 +46,7 @@ function HomeView() {
           <h1>Viví lo que<br /><em>no se repite.</em></h1>
           <p className="hero-description">Las mejores experiencias en vivo, curadas para vos. Encontrá tu próxima noche inolvidable.</p>
           <div className="hero-actions"><a className="primary-button" href="#eventos">Explorar eventos <span>→</span></a><button className="play-button" type="button" onClick={() => window.alert('Entrada te ayuda a descubrir y comprar experiencias en vivo.')}><span>▶</span> Conocé Entrada</button></div>
+          {user && <div className="hero-actions"><Link className="text-link" to="/billetera/pagar">Pagar con QR</Link><Link className="text-link" to="/billetera/cobrar">Cobrar con QR</Link></div>}
         </div>
         <div className="hero-art" aria-hidden="true"><div className="orb orb-one" /><div className="orb orb-two" /><div className="concert-card"><div className="card-glow" /><p>LIVE<br />MUSIC</p><span>2026</span></div><div className="ticket ticket-top"><span>ENTRADA</span><b>01</b></div><div className="ticket ticket-bottom"><span>CONCIERTO</span><b>LIVE</b></div></div>
       </section>

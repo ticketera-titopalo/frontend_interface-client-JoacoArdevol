@@ -1,0 +1,21 @@
+.wallet-page { max-width: 760px; min-height: 75vh; margin: 45px auto; padding: 0 24px 60px; }
+.wallet-page > a { color: #67645e; font-size: 14px; }
+.wallet-page h1 { margin: 24px 0 8px; }
+.wallet-page h2 { margin-bottom: 12px; }
+.wallet-page p { color: #67645e; line-height: 1.5; }
+.wallet-form { display: grid; gap: 9px; margin: 24px 0; }
+.wallet-form label { font-weight: 600; }
+.wallet-form input, .wallet-form textarea { border: 1px solid #cfcac0; border-radius: 4px; font: inherit; padding: 11px; }
+.wallet-page button { background: #e86d49; border: 0; border-radius: 4px; color: white; cursor: pointer; font: inherit; padding: 10px 15px; }
+.wallet-page button:disabled { cursor: not-allowed; opacity: .55; }
+.qr-reader { margin: 20px 0; max-width: 440px; }
+.wallet-confirmation, .intent-card { background: #fffefa; border: 1px solid #ddd8ce; border-radius: 5px; margin-top: 20px; padding: 20px; }
+.wallet-confirmation dl { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.wallet-confirmation dl div { border-bottom: 1px solid #e8e4dc; padding-bottom: 8px; }
+.wallet-confirmation dt { color: #77736b; font-size: 13px; }
+.wallet-confirmation dd { font-weight: 600; margin: 4px 0 0; }
+.wallet-confirmation button + button, .intent-card button + button { background: #77736b; margin-left: 8px; }
+.receive-qr { background: white; display: inline-block; margin: 12px 0 30px; padding: 12px; text-align: center; }
+.incoming-intents { border-top: 1px solid #ddd8ce; padding-top: 18px; }
+.intent-card p { margin: 5px 0 12px; }
+@media (max-width: 560px) { .wallet-page { margin-top: 28px; padding: 0 18px 45px; }.wallet-confirmation dl { grid-template-columns: 1fr; } }
