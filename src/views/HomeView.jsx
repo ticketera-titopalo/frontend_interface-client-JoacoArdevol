@@ -51,7 +51,7 @@ function HomeView() {
       </section>
 
       <section className="events-section" id="eventos">
-        <div className="section-heading"><div><p className="eyebrow">SELECCIÓN DE LA SEMANA</p><h2>Para vivir muy pronto.</h2></div><a href="#eventos" className="text-link">Ver todos los eventos <span>→</span></a></div>
+        <div className="section-heading"><div><p className="eyebrow">SELECCIÓN DE LA SEMANA</p><h2>Conciertos para vivir muy pronto.</h2></div><a href="#eventos" className="text-link">Ver todos los eventos <span>→</span></a></div>
         {concertsLoading && <p className="event-list-message" role="status">Cargando conciertos…</p>}
         {!concertsLoading && concertsError && <p className="event-list-message event-list-error" role="alert">No pudimos cargar los conciertos. Intentá nuevamente más tarde.</p>}
         {!concertsLoading && !concertsError && concerts.length === 0 && <p className="event-list-message">No hay conciertos disponibles en este momento.</p>}
