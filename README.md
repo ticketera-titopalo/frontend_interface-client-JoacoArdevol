@@ -9,8 +9,8 @@ poner los nombres acá
 
 ## Configuración del backend
 
-La URL de la API se configura con `VITE_API_URL`; no está fijada en los componentes. Copiá `.env.example` como `.env` y reemplazá `192.168.1.100` por la IP LAN del equipo donde corre el backend. Conservá el puerto y el prefijo `/api` que correspondan a esa instalación. El `.env` local está ignorado por Git.
+La URL de la API se configura en `.env` mediante `VITE_API_URL`, por ejemplo `http://ip-back:5000/`. Reemplazá `ip-back` por el host del backend. El prefijo `/api` se agrega en los servicios. `.env` permanece local e ignorado por Git; `.env.example` documenta la configuración.
 
 El cliente HTTP está centralizado en `src/services/apiClient.ts` y aplica un timeout de 10 segundos. Las funciones de acceso a estado y eventos están en `src/services/events.ts`.
 
-Para validar los tipos, ejecutá `npx tsc` o `npm run typecheck`.
+Para validar tipos y calidad, ejecutá `npx tsc`, `npx eslint .` y `npx vitest run`.

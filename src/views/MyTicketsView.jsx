@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import TicketCard from '../components/TicketCard';
 import { getMyTickets, getPurchaseTickets } from '../services/ticketService';
 import './MyTicketsView.css';
+import Spinner from '../components/Spinner';
 
 function MyTicketsView() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,7 +35,7 @@ function MyTicketsView() {
         {purchaseId && <p>Entradas de la compra #{purchaseId}</p>}
       </header>
       {purchaseId && <button className="ticket-filter-clear" type="button" onClick={() => setSearchParams({})}>Ver todas mis entradas</button>}
-      {loading && <p role="status">Cargando entradas…</p>}
+      {loading && <Spinner label="Cargando entradas…" />}
       {!loading && request.forbidden && <p role="alert">No tenés permiso para ver las entradas de esta compra.</p>}
       {!loading && !request.forbidden && !tickets.length && <p>No encontramos entradas{purchaseId ? ' para esta compra' : ''}.</p>}
       {!loading && !request.forbidden && tickets.length > 0 && <div className="my-tickets-list">{tickets.map((ticket) => <TicketCard key={ticket.id} ticket={ticket} />)}</div>}

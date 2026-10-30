@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import EventPurchase from '../components/EventPurchase';
 import { useSession } from '../hooks/useSession';
 import { getConcert } from '../services/concertService';
+import Spinner from '../components/Spinner';
 import './ConcertDetailView.css';
 
 function ConcertDetailView() {
@@ -24,7 +25,7 @@ function ConcertDetailView() {
 
   const loading = request.id !== id || request.loading;
   const concert = request.id === id ? request.concert : null;
-  if (loading) return <main className="purchase-page"><p role="status">Cargando concierto…</p></main>;
+  if (loading) return <main className="purchase-page"><Spinner label="Cargando concierto…" /></main>;
   if (request.notFound) return <main className="purchase-page"><h1>Concierto no encontrado</h1><Link to="/">Volver a la cartelera</Link></main>;
   if (request.error || !concert) return <main className="purchase-page"><p role="alert">No pudimos cargar el concierto. Intentá nuevamente más tarde.</p><Link to="/">Volver a la cartelera</Link></main>;
 

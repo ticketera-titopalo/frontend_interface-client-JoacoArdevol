@@ -16,7 +16,7 @@ export interface PurchaseResponse {
   tickets_created: number;
 }
 
-export async function createPurchase(payload: PurchasePayload) {
-  const response = await apiClient.post<PurchaseResponse>('/purchase', payload);
+export async function createPurchase(payload: PurchasePayload): Promise<PurchaseResponse> {
+  const response = await apiClient.post<PurchaseResponse>('/api/purchase', payload);
   return response.data;
 }
