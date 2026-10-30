@@ -1,2 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap');
 * { box-sizing: border-box; } html { scroll-behavior: smooth; } body { margin: 0; min-width: 320px; background: #f5f3ef; color: #1b1b1a; font-family: 'DM Sans', Arial, sans-serif; } button, a { font: inherit; } a { color: inherit; text-decoration: none; } button { cursor: pointer; }
+.loading-state { align-items: center; display: flex; gap: 10px; }
+.spinner { animation: spin .8s linear infinite; border: 2px solid #ddd8ce; border-radius: 50%; border-top-color: #e86d49; display: inline-block; height: 18px; width: 18px; }
+.global-toast { position: fixed; right: 20px; top: 20px; width: min(420px, calc(100vw - 40px)); z-index: 10; }
+.profile-form { display: grid; gap: 14px; max-width: 520px; }
+.profile-form label { display: grid; gap: 6px; }
+.profile-form input { border: 1px solid #cfcac0; border-radius: 4px; font: inherit; padding: 11px; }
+@keyframes spin { to { transform: rotate(360deg); } }
