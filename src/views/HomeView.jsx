@@ -51,7 +51,7 @@ function HomeView() {
         <div className="hero-art" aria-hidden="true"><div className="orb orb-one" /><div className="orb orb-two" /><div className="concert-card"><div className="card-glow" /><p>LIVE<br />MUSIC</p><span>2026</span></div><div className="ticket ticket-top"><span>ENTRADA</span><b>01</b></div><div className="ticket ticket-bottom"><span>CONCIERTO</span><b>LIVE</b></div></div>
       </section>
 
-      <section className="events-section" id="eventos">
+      <section className="events-section" id="eventos" aria-label="Eventos disponibles">
         <div className="section-heading"><div><p className="eyebrow">SELECCIÓN DE LA SEMANA</p><h2>Conciertos para vivir muy pronto.</h2></div><a href="#eventos" className="text-link">Ver todos los eventos <span>→</span></a></div>
         {concertsLoading && <p className="event-list-message" role="status">Cargando conciertos…</p>}
         {!concertsLoading && concertsError && <p className="event-list-message event-list-error" role="alert">No pudimos cargar los conciertos. Intentá nuevamente más tarde.</p>}
