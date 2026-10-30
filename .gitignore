@@ -25,4 +25,5 @@ dist-ssr
 
 # Local environment configuration
 .env
+.env.*
 !.env.example
