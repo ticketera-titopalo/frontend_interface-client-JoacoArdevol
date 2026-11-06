@@ -68,7 +68,7 @@ function HomeView() {
         <EventsContent loading={concertsLoading} error={concertsError} concerts={concerts} />
       </section>
 
-      <section className="trust-strip" id="experiencias"><p>Más que una entrada, una experiencia completa.</p><div><span>✓ Compra segura</span><span>✦ Beneficios exclusivos</span><span>◎ Soporte cuando lo necesitás</span></div></section>
+      <section className="trust-strip" id="experiencias"><p>Más que una entrada: una experiencia completa.</p><div><span>✓ Compra segura</span><span>✦ Beneficios exclusivos</span><span>◎ Soporte cuando lo necesitás</span></div></section>
       <footer id="ayuda"><span>© 2026 entrada.</span><span>Entradas seguras para experiencias en vivo</span></footer>
     </main>
   );
