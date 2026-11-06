@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { validate } from '../services/validateService';
+import Spinner from '../components/Spinner';
 
 function ValidateView() {
   const [code, setCode] = useState('');
@@ -42,6 +43,7 @@ function ValidateView() {
         </div>
         <small>También podés usar un lector de códigos conectado al equipo.</small>
       </form>
+      {loading && <Spinner label="Validando entrada…" />}
       {result?.type === 'valid' && <p role="status">✅ Validada — {value(owner) || 'Propietario sin datos'} · {value(concert) || 'Concierto sin datos'} · {time || 'Hora no disponible'}</p>}
       {result?.type === 'used' && <p role="alert">Esta entrada ya fue utilizada. {result.message}</p>}
       {result?.type === 'missing' && <p role="alert">No existe una entrada con ese código. {result.message}</p>}

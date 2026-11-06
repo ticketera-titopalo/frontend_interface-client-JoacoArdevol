@@ -3,29 +3,29 @@
 
 > Documento **generado automáticamente** por la cátedra de Programación III (RepoSense + análisis de calidad + constancia). **No editar a mano**: se regenera en cada evaluación.
 > Rama evaluada: `main`. Análisis **heurístico** (regex + métricas): es una criba para orientar la revisión, **no una nota**.
-> Generado: 2026-10-29.
+> Generado: 2026-11-05.
 
 ## 1. Veredicto
 
 | Aspecto | Resultado |
 |---|---|
 | Tipo de proyecto | frontend |
-| Índice de calidad de servicios | **37/100** (mínimo 60) |
-| Criterios cumplidos | **12/14** |
-| Aprobado (semáforo) | **NO** |
-| Código (LOC) | 923 |
-| Archivos de código | 31 |
-| Tests (archivos) | 0 |
-| Cobertura de líneas | no aplica (frontend sin herramienta de cobertura E2E) (mínimo 80%) |
+| Índice de calidad de servicios | **61/100** (mínimo 50) |
+| Criterios cumplidos | **13/14** |
+| Aprobado (semáforo) | **SI** |
+| Código (LOC) | 959 |
+| Archivos de código | 33 |
+| Tests (archivos) | 7 |
+| Cobertura de líneas | no aplica (frontend sin herramienta de cobertura E2E) |
 | Capas detectadas | vistas, servicios, estado |
 
-> **Aprobado** exige cumplir **todos** los criterios del semáforo. No es una nota: sirve para ordenar y priorizar la revisión.
+> **Aprobado** exige las compuertas críticas (**SEC**, **SQL**, **capas**, **índice ≥ 50** y **cobertura ≥ 80 %** cuando aplica) y tolera hasta **3 criterios en rojo** (12/15). No es una nota: sirve para ordenar y priorizar la revisión.
 
 ## 2. Autoría (RepoSense)
 
 | Autor | Commits | Código (LOC) | Tests (LOC) | Docs (LOC) | Días activos | % del código |
 |---|---:|---:|---:|---:|---:|---:|
-| joaquin ardevol | 10 | 1,299 | 0 | 8 | 8 | 100% |
+| joaquin ardevol | 15 | 1,332 | 124 | 8 | 9 | 100% |
 
 > _El LOC de autoría lo calcula RepoSense sobre el historial y puede diferir del LOC de código del análisis de calidad (que mira solo el estado de `main`)._
 
@@ -35,7 +35,7 @@
 
 | Alumno | Sesiones | Cumplimiento | Pausa | Recencia | IC | Nivel | Para subir de nivel |
 |---|--:|--:|--:|--:|--:|--|--|
-| joaquin ardevol | 5 | 23% | 42 d | 93% | **28** | No aprueba | Cumplimiento 23% (mín. 50%); Pausa 42 d (máx. 10 d) |
+| joaquin ardevol | 6 | 26% | 42 d | 57% | **25** | No aprueba | Cumplimiento 26% (mín. 50%) |
 
 > Para aprobar el IC: **2 sesiones por semana** sostenidas, sin pausas mayores a **10 días** y con actividad en las **últimas 2 semanas**. Se excluyen merges, bots y al docente. Zona horaria UTC-3.
 
@@ -43,15 +43,11 @@
 
 Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuando el resultado está en rojo, se agregan preguntas para **investigar la causa** (no hay recetas: entender el porqué es parte de la evaluación).
 
-### 1. Índice de calidad de servicios (indice) — A REVISAR
+### 1. Índice de calidad de servicios (indice) — OK
 
 - **Qué mide:** Un resumen numérico (0-100) que combina todas las señales y métricas del análisis, con topes duros por duplicación.
 - **Por qué importa:** Ordena y prioriza la revisión: un índice bajo indica varias señales que conviene mirar juntas.
-- **Tu resultado:** índice **37/100** _(mínimo 60)_
-- **Para investigar la causa:**
-    - ¿En qué momento del proyecto se concentraron los problemas (arranque, integración de partes, cierre)?
-    - ¿El índice bajó por muchas señales chicas o por una o dos graves?
-    - ¿Se revisó el código integrado después de unir el trabajo de cada integrante?
+- **Tu resultado:** índice **61/100** _(mínimo 50)_
 
 ### 2. Duplicación (DRY) (duplicacion) — OK
 
@@ -111,7 +107,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Complejidad ciclomática: cantidad de caminos posibles dentro de una función (condicionales, bucles, casos).
 - **Por qué importa:** Muchos caminos = difícil de seguir y de probar; suelen esconderse casos sin cubrir.
-- **Tu resultado:** **9** bloque(s) de complejidad alta _(máximo 5 por 1000 LOC (tenés 923 LOC))_
+- **Tu resultado:** **10** bloque(s) de complejidad alta _(máximo 5 por 1000 LOC (tenés 959 LOC))_
 - **Para investigar la causa:**
     - ¿Se agregaron condiciones a medida que aparecían casos nuevos?
     - ¿Se probaron todos los caminos o solo el caso principal?
@@ -121,7 +117,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Tamaño de las funciones/métodos y cantidad de parámetros.
 - **Por qué importa:** Una función que hace varias cosas cuesta leerla, nombrarla y reutilizarla.
-- **Tu resultado:** **6** función/método(s) largos o con muchos parámetros _(máximo 10 por 1000 LOC)_
+- **Tu resultado:** **7** función/método(s) largos o con muchos parámetros _(máximo 10 por 1000 LOC)_
 
 ### 13. Acoplamiento alto (Acop) — OK
 
@@ -133,30 +129,29 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Cantidad de vistas/componentes de pantalla del frontend.
 - **Por qué importa:** El frontend se mide por pantallas: pocas vistas sugiere poca cobertura de la interfaz pedida.
-- **Tu resultado:** **16** vista(s)/componente(s) _(mínimo 8)_
+- **Tu resultado:** **19** vista(s)/componente(s) _(mínimo 6)_
 
-## 5. Qué falta para aprobar
+## 5. Observaciones y qué falta
 
-Criterios que hoy están en rojo y qué habría que cambiar para alcanzar el nivel de aprobación (perfil `exigente`):
+**Aprobado con observaciones.** Estos criterios quedan en rojo (se permiten hasta **3** sin que sean compuertas críticas), así que no bloquean la aprobación pero conviene corregirlos:
 
-| Criterio | Resultado actual | Meta | Qué arreglar |
-|---|---|---|---|
-| Índice de calidad de servicios (indice) | índice **37/100** | mínimo 60 | Subir el índice a ≥60 corrigiendo primero las señales de más peso: duplicación, secretos, SQL y capas. |
-| Complejidad alta (Compl) | **9** bloque(s) de complejidad alta | máximo 5 por 1000 LOC (tenés 923 LOC) | Extraer ramas y reglas a funciones con nombre propio; ≤5 bloques por 1000 LOC. |
-
-> Empezá por las señales de seguridad (**SEC**, **SQL**) y por la **duplicación**: son las que más pesan en el índice y las más rápidas de verificar a ojo.
+| Criterio | Resultado actual | Meta | Brecha | Cómo alcanzarlo |
+|---|---|---|---|---|
+| Complejidad alta (Compl) | **10** bloque(s) de complejidad alta | máximo 5 por 1000 LOC (tenés 959 LOC) | 10 hallazgo(s); el máximo para 959 LOC es 4.8 | Extraé condiciones y ramas a funciones con nombre propio, usá retornos tempranos y evitá anidar `if`/`switch`. Meta: ≤5 bloques por 1000 LOC. |
 
 ## 6. Anexo: dónde mirar
 
 Archivos donde el análisis encontró cada señal en rojo (sin número de línea, a propósito):
 
-**Complejidad alta (Compl)** — 6 archivo(s):
-- `src/components/EventList.jsx`
+**Complejidad alta (Compl)** — 8 archivo(s):
 - `src/services/httpError.ts`
 - `src/views/ConcertDetailView.jsx`
 - `src/views/HomeView.jsx`
 - `src/views/LoginView.jsx`
 - `src/views/MyTicketsView.jsx`
+- `src/views/ProfileView.jsx`
+- `src/views/TicketLookupView.jsx`
+- `src/views/ValidateView.jsx`
 
 ---
 _Informe generado por la cátedra. Los umbrales corresponden al perfil `exigente`. Ante dudas, revisá el archivo señalado y el criterio en `CRITERIOS-CALIDAD.md`._

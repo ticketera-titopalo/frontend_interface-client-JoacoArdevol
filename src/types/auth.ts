@@ -4,15 +4,13 @@ export interface AuthUser {
   email: string;
   role: string;
   nombre?: string;
-  name?: string;
-  alias?: string;
-  cvu?: string;
-  wallet_id?: string | number;
-  wallet?: { id?: string | number; wallet_id?: string | number; nombre?: string; name?: string; alias?: string; cvu?: string };
-  billetera?: { id?: string | number; wallet_id?: string | number; nombre?: string; name?: string; alias?: string; cvu?: string };
+  apellido?: string;
+  dni?: string;
+  telefono?: string;
 }
 
 export interface AuthSession {
   token: string;
+  refreshToken?: string | null;
   user: AuthUser;
 }

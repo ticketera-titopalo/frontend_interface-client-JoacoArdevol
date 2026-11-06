@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { createPurchase } from '../services/purchases';
+import { createPurchase } from '../services/purchaseService';
 import Toast from './Toast';
 import './EventPurchase.css';
 
@@ -41,9 +41,10 @@ function EventPurchase({ event, id, user }) {
     } catch (error) {
       const status = error.response?.status;
       const data = error.response?.data || {};
-      if (status === 400 && data.stock_disponible !== undefined) {
-        setStockUpdate({ id: String(concertId), value: Number(data.stock_disponible) });
-        setNotice({ type: 'error', text: `Stock insuficiente. Quedan ${data.stock_disponible} entradas disponibles.` });
+      const stockInsufficient = data.stock_disponible !== undefined || /stock|disponible|insuficiente/i.test(data.message || '');
+      if (status === 400 && stockInsufficient) {
+        if (data.stock_disponible !== undefined) setStockUpdate({ id: String(concertId), value: Number(data.stock_disponible) });
+        setNotice({ type: 'error', text: data.stock_disponible === undefined ? data.message : `Stock insuficiente. Quedan ${data.stock_disponible} entradas disponibles.` });
       } else if (status === 400) {
         setNotice({ type: 'error', text: 'La cantidad solicitada no es válida. Ingresá al menos 1 entrada.' });
       } else if (status === 404) {
@@ -73,8 +74,8 @@ function EventPurchase({ event, id, user }) {
       <form onSubmit={submitPurchase} className="concert-purchase-form">
         <label htmlFor="ticket-quantity">Cantidad</label>
         <input id="ticket-quantity" type="number" min="1" max={Number.isFinite(stock) ? Math.max(1, stock) : undefined} value={quantity} onChange={(e) => setQuantity(e.target.value === '' ? 0 : Number(e.target.value))} disabled={pending || Boolean(purchase)} />
-        <button className="checkout-button" type="submit" disabled={pending || Boolean(purchase) || stock === 0 || !Number.isInteger(concertId) || !Number.isInteger(quantity) || quantity < 1}>
-          {pending ? 'Procesando compra…' : purchase ? 'Compra realizada' : 'Comprar'}
+        <button className="checkout-button" type="submit" aria-busy={pending} disabled={pending || Boolean(purchase) || stock === 0 || !Number.isInteger(concertId) || !Number.isInteger(quantity) || quantity < 1}>
+          {pending && <span className="spinner" aria-hidden="true" />}{pending ? 'Procesando compra…' : purchase ? 'Compra realizada' : 'Comprar'}
         </button>
       </form>
       <Toast type={notice?.type} onClose={() => setNotice(null)}>{notice?.text}</Toast>

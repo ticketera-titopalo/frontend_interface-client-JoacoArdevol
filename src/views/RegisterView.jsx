@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { getErrorMessage } from '../services/httpError';
 import { register } from '../services/authService';
+import Toast from '../components/Toast';
+import Spinner from '../components/Spinner';
 import './auth.css';
 
 function RegisterView() {
@@ -35,8 +37,9 @@ function RegisterView() {
         <form onSubmit={handleSubmit}>
           <label>Email<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label>
           <label>Contraseña<input required type="password" autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} /></label>
-          {error && <p className="payment-error" role="alert">{error}</p>}
+          {error && <Toast type="error">{error}</Toast>}
           <button className="checkout-button" type="submit" disabled={pending}>{pending ? 'Creando cuenta…' : 'Crear cuenta'}</button>
+          {pending && <Spinner label="Creando cuenta…" />}
         </form>
         <p className="auth-switch">¿Ya tenés cuenta? <Link to="/login" state={location.state}>Iniciar sesión</Link></p>
         <Link className="auth-back" to="/">Volver a eventos</Link>
