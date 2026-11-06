@@ -3,6 +3,42 @@ import { Link } from 'react-router-dom';
 import { validate } from '../services/validateService';
 import Spinner from '../components/Spinner';
 
+function validationError(error) {
+  const status = error.response?.status;
+  const type = status === 409 ? 'used' : status === 404 ? 'missing' : 'error';
+  return { type, message: error.response?.data?.message };
+}
+
+function firstDefined(...values) {
+  return values.find(Boolean);
+}
+
+function ticketValue(item) {
+  if (typeof item !== 'object' || !item) return item;
+  return firstDefined(item.name, item.nombre, item.email);
+}
+
+function ValidationResult({ result }) {
+  if (!result) return null;
+  const ticket = result.ticket || {};
+  const owner = firstDefined(ticket.propietario, ticket.owner, ticket.user);
+  const concert = firstDefined(ticket.concierto, ticket.concert, ticket.event);
+  const time = firstDefined(ticket.validated_at, ticket.validatedAt, ticket.hora);
+
+  switch (result.type) {
+    case 'valid':
+      return <p role="status">✅ Validada — {ticketValue(owner) || 'Propietario sin datos'} · {ticketValue(concert) || 'Concierto sin datos'} · {time || 'Hora no disponible'}</p>;
+    case 'used':
+      return <p role="alert">Esta entrada ya fue utilizada. {result.message}</p>;
+    case 'missing':
+      return <p role="alert">No existe una entrada con ese código. {result.message}</p>;
+    case 'error':
+      return <p role="alert">No se pudo validar la entrada. {result.message}</p>;
+    default:
+      return null;
+  }
+}
+
 function ValidateView() {
   const [code, setCode] = useState('');
   const [result, setResult] = useState(null);
@@ -18,18 +54,11 @@ function ValidateView() {
       setResult({ type: 'valid', ticket });
       setCode('');
     } catch (error) {
-      const status = error.response?.status;
-      setResult({ type: status === 409 ? 'used' : status === 404 ? 'missing' : 'error', message: error.response?.data?.message });
+      setResult(validationError(error));
     } finally {
       setLoading(false);
     }
   }
-
-  const data = result?.ticket || {};
-  const owner = data.propietario || data.owner || data.user;
-  const concert = data.concierto || data.concert || data.event;
-  const time = data.validated_at || data.validatedAt || data.hora;
-  const value = (item) => typeof item === 'object' && item ? item.name || item.nombre || item.email : item;
 
   return (
     <main style={{ maxWidth: 640, margin: '50px auto', padding: '0 20px' }}>
@@ -44,10 +73,7 @@ function ValidateView() {
         <small>También podés usar un lector de códigos conectado al equipo.</small>
       </form>
       {loading && <Spinner label="Validando entrada…" />}
-      {result?.type === 'valid' && <p role="status">✅ Validada — {value(owner) || 'Propietario sin datos'} · {value(concert) || 'Concierto sin datos'} · {time || 'Hora no disponible'}</p>}
-      {result?.type === 'used' && <p role="alert">Esta entrada ya fue utilizada. {result.message}</p>}
-      {result?.type === 'missing' && <p role="alert">No existe una entrada con ese código. {result.message}</p>}
-      {result?.type === 'error' && <p role="alert">No se pudo validar la entrada. {result.message}</p>}
+      <ValidationResult result={result} />
     </main>
   );
 }

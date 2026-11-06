@@ -5,6 +5,26 @@ import { getMyTickets, getPurchaseTickets } from '../services/ticketService';
 import './MyTicketsView.css';
 import Spinner from '../components/Spinner';
 
+function PurchaseFilter({ purchaseId, onClear }) {
+  if (!purchaseId) return null;
+  return <button className="ticket-filter-clear" type="button" onClick={onClear}>Ver todas mis entradas</button>;
+}
+
+function TicketsHeading({ purchaseId }) {
+  return <header className="my-tickets-heading">
+    <p className="purchase-kicker">TUS EXPERIENCIAS</p>
+    <h1>Mis Entradas</h1>
+    {purchaseId && <p>Entradas de la compra #{purchaseId}</p>}
+  </header>;
+}
+
+function TicketsContent({ loading, forbidden, tickets, purchaseId }) {
+  if (loading) return <Spinner label="Cargando entradas…" />;
+  if (forbidden) return <p role="alert">No tenés permiso para ver las entradas de esta compra.</p>;
+  if (tickets.length === 0) return <p>No encontramos entradas{purchaseId ? ' para esta compra' : ''}.</p>;
+  return <div className="my-tickets-list">{tickets.map((ticket) => <TicketCard key={ticket.id} ticket={ticket} />)}</div>;
+}
+
 function MyTicketsView() {
   const [searchParams, setSearchParams] = useSearchParams();
   const purchaseId = searchParams.get('purchase_id');
@@ -29,16 +49,9 @@ function MyTicketsView() {
   return (
     <main className="my-tickets-page">
       <Link to="/" className="back-link">← Volver a la cartelera</Link>
-      <header className="my-tickets-heading">
-        <p className="purchase-kicker">TUS EXPERIENCIAS</p>
-        <h1>Mis Entradas</h1>
-        {purchaseId && <p>Entradas de la compra #{purchaseId}</p>}
-      </header>
-      {purchaseId && <button className="ticket-filter-clear" type="button" onClick={() => setSearchParams({})}>Ver todas mis entradas</button>}
-      {loading && <Spinner label="Cargando entradas…" />}
-      {!loading && request.forbidden && <p role="alert">No tenés permiso para ver las entradas de esta compra.</p>}
-      {!loading && !request.forbidden && !tickets.length && <p>No encontramos entradas{purchaseId ? ' para esta compra' : ''}.</p>}
-      {!loading && !request.forbidden && tickets.length > 0 && <div className="my-tickets-list">{tickets.map((ticket) => <TicketCard key={ticket.id} ticket={ticket} />)}</div>}
+      <TicketsHeading purchaseId={purchaseId} />
+      <PurchaseFilter purchaseId={purchaseId} onClear={() => setSearchParams({})} />
+      <TicketsContent loading={loading} forbidden={request.forbidden} tickets={tickets} purchaseId={purchaseId} />
     </main>
   );
 }
