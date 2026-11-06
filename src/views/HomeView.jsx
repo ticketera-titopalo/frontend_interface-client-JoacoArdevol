@@ -50,8 +50,8 @@ function HomeView() {
         {!concertsLoading && !concertsError && concerts.length > 0 && <div className="event-list-grid">{concerts.map((concert) => <ConcertCard key={concert.id} concert={concert} />)}</div>}
       </section>
 
-      <section className="trust-strip" id="experiencias"><p>Más que una entrada, una experiencia completa.</p><div><span>✓ Compra segura</span><span>✦ Beneficios exclusivos</span><span>◎ Soporte cuando lo necesitás</span></div></section>
-      <footer id="ayuda"><span>© 2026 entrada.</span><span>Entradas seguras para experiencias en vivo</span></footer>
+      <section className="trust-strip" id="experiencias"><p>Más que una entrada: una experiencia completa.</p><div><span>✓ Compra segura</span><span>✦ Beneficios exclusivos</span><span>◎ Soporte cuando lo necesitás</span></div></section>
+      <footer id="ayuda"><span>© 2026 entrada.</span><span className={`connection ${status}`}><i />{status === 'checking' && 'Conectando…'}{status === 'ok' && (statusData?.message || 'Servicio disponible')}{status === 'error' && 'Servicio sin conexión'}</span></footer>
     </main>
   );
 }
