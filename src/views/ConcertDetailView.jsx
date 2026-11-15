@@ -6,6 +6,24 @@ import { getConcert } from '../services/concertService';
 import Spinner from '../components/Spinner';
 import './ConcertDetailView.css';
 
+function getRequestState(id, data) {
+  return { id, concert: data, loading: false };
+}
+
+function getRequestErrorState(id, error) {
+  const notFound = error.response?.status === 404;
+  return { id, notFound, error: !notFound, loading: false };
+}
+
+function getRequestNotice(request, id) {
+  const loading = request.id !== id || request.loading;
+  const concert = request.id === id ? request.concert : null;
+  if (loading) return <main className="purchase-page"><Spinner label="Cargando concierto…" /></main>;
+  if (request.notFound) return <main className="purchase-page"><h1>Concierto no encontrado</h1><Link to="/">Volver a la cartelera</Link></main>;
+  if (request.error || !concert) return <main className="purchase-page"><p role="alert">No pudimos cargar el concierto. Intentá nuevamente más tarde.</p><Link to="/">Volver a la cartelera</Link></main>;
+  return null;
+}
+
 function ConcertDetailView() {
   const { id } = useParams();
   const { user } = useSession();
@@ -14,20 +32,17 @@ function ConcertDetailView() {
   useEffect(() => {
     let active = true;
     getConcert(id)
-      .then((data) => { if (active) setRequest({ id, concert: data, loading: false }); })
+      .then((data) => { if (active) setRequest(getRequestState(id, data)); })
       .catch((requestError) => {
         if (!active) return;
-        const notFound = requestError.response?.status === 404;
-        setRequest({ id, notFound, error: !notFound, loading: false });
+        setRequest(getRequestErrorState(id, requestError));
       });
     return () => { active = false; };
   }, [id]);
 
-  const loading = request.id !== id || request.loading;
+  const notice = getRequestNotice(request, id);
+  if (notice) return notice;
   const concert = request.id === id ? request.concert : null;
-  if (loading) return <main className="purchase-page"><Spinner label="Cargando concierto…" /></main>;
-  if (request.notFound) return <main className="purchase-page"><h1>Concierto no encontrado</h1><Link to="/">Volver a la cartelera</Link></main>;
-  if (request.error || !concert) return <main className="purchase-page"><p role="alert">No pudimos cargar el concierto. Intentá nuevamente más tarde.</p><Link to="/">Volver a la cartelera</Link></main>;
 
   return (
     <>

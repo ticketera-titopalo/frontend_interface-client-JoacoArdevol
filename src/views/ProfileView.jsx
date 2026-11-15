@@ -5,6 +5,22 @@ import Toast from '../components/Toast';
 import { getMe, updateMe } from '../services/userService';
 
 const emptyProfile = { nombre: '', apellido: '', dni: '', telefono: '' };
+const profileFields = (data) => Object.fromEntries(Object.keys(emptyProfile).map((key) => [key, data[key] || '']));
+function getSaveErrorMessage(status) {
+  if (status === 400) return 'El servidor rechazó uno o más campos.';
+  if (status === 409) return 'Ese DNI ya está asociado a otra cuenta.';
+  return 'No pudimos guardar los cambios.';
+}
+
+function ProfileEditor({ profile, fields, setFields, saveProfile, saving }) {
+  if (!profile) return null;
+  return <form className="profile-form" onSubmit={saveProfile}>
+    <label>Email<input value={profile.email} readOnly /></label>
+    <label>Rol<input value={profile.role} readOnly /></label>
+    {Object.keys(emptyProfile).map((key) => <label key={key}>{key[0].toUpperCase() + key.slice(1)}<input value={fields[key]} onChange={(event) => setFields({ ...fields, [key]: event.target.value })} /></label>)}
+    <button type="submit" disabled={saving}>{saving ? 'Guardando…' : 'Guardar cambios'}</button>
+  </form>;
+}
 
 function ProfileView() {
   const [profile, setProfile] = useState(null);
@@ -18,7 +34,7 @@ function ProfileView() {
     getMe().then((data) => {
       if (!active) return;
       setProfile(data);
-      setFields({ nombre: data.nombre || '', apellido: data.apellido || '', dni: data.dni || '', telefono: data.telefono || '' });
+      setFields(profileFields(data));
     }).catch(() => { if (active) setNotice({ type: 'error', text: 'No pudimos cargar tu perfil.' }); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
@@ -31,12 +47,11 @@ function ProfileView() {
     try {
       const updated = await updateMe(fields);
       setProfile(updated);
-      setFields({ nombre: updated.nombre || '', apellido: updated.apellido || '', dni: updated.dni || '', telefono: updated.telefono || '' });
+      setFields(profileFields(updated));
       setNotice({ type: 'success', text: 'Perfil actualizado.' });
     } catch (error) {
       const status = error.response?.status;
-      const text = status === 400 ? 'El servidor rechazó uno o más campos.' : status === 409 ? 'Ese DNI ya está asociado a otra cuenta.' : 'No pudimos guardar los cambios.';
-      setNotice({ type: 'error', text });
+      setNotice({ type: 'error', text: getSaveErrorMessage(status) });
     } finally { setSaving(false); }
   }
 
@@ -44,12 +59,7 @@ function ProfileView() {
   return <main className="my-tickets-page">
     <Link to="/">← Volver a eventos</Link><h1>Mi perfil</h1>
     <Toast type={notice?.type}>{notice?.text}</Toast>
-    {profile && <form className="profile-form" onSubmit={saveProfile}>
-      <label>Email<input value={profile.email} readOnly /></label>
-      <label>Rol<input value={profile.role} readOnly /></label>
-      {Object.keys(emptyProfile).map((key) => <label key={key}>{key[0].toUpperCase() + key.slice(1)}<input value={fields[key]} onChange={(event) => setFields({ ...fields, [key]: event.target.value })} /></label>)}
-      <button type="submit" disabled={saving}>{saving ? 'Guardando…' : 'Guardar cambios'}</button>
-    </form>}
+    <ProfileEditor profile={profile} fields={fields} setFields={setFields} saveProfile={saveProfile} saving={saving} />
   </main>;
 }
 
