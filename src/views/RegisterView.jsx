@@ -6,6 +6,27 @@ import Toast from '../components/Toast';
 import Spinner from '../components/Spinner';
 import './auth.css';
 
+function RegisterForm({ locationState, email, setEmail, password, setPassword, error, pending, onSubmit }) {
+  return (
+    <main className="auth-page">
+      <section className="auth-card" aria-labelledby="register-title">
+        <p className="purchase-kicker">CREÁ TU CUENTA</p>
+        <h1 id="register-title">Registrate</h1>
+        <p>Usá tu email para guardar tus entradas y compras.</p>
+        <form onSubmit={onSubmit}>
+          <label>Email<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label>
+          <label>Contraseña<input required type="password" autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} /></label>
+          {error && <Toast type="error">{error}</Toast>}
+          <button className="checkout-button" type="submit" disabled={pending}>{pending ? 'Creando cuenta…' : 'Crear cuenta'}</button>
+          {pending && <Spinner label="Creando cuenta…" />}
+        </form>
+        <p className="auth-switch">¿Ya tenés cuenta? <Link to="/login" state={locationState}>Iniciar sesión</Link></p>
+        <Link className="auth-back" to="/">Volver a eventos</Link>
+      </section>
+    </main>
+  );
+}
+
 function RegisterView() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,22 +50,7 @@ function RegisterView() {
   };
 
   return (
-    <main className="auth-page">
-      <section className="auth-card" aria-labelledby="register-title">
-        <p className="purchase-kicker">CREÁ TU CUENTA</p>
-        <h1 id="register-title">Registrate</h1>
-        <p>Usá tu email para guardar tus entradas y compras.</p>
-        <form onSubmit={handleSubmit}>
-          <label>Email<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label>
-          <label>Contraseña<input required type="password" autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} /></label>
-          {error && <Toast type="error">{error}</Toast>}
-          <button className="checkout-button" type="submit" disabled={pending}>{pending ? 'Creando cuenta…' : 'Crear cuenta'}</button>
-          {pending && <Spinner label="Creando cuenta…" />}
-        </form>
-        <p className="auth-switch">¿Ya tenés cuenta? <Link to="/login" state={location.state}>Iniciar sesión</Link></p>
-        <Link className="auth-back" to="/">Volver a eventos</Link>
-      </section>
-    </main>
+    <RegisterForm locationState={location.state} email={email} setEmail={setEmail} password={password} setPassword={setPassword} error={error} pending={pending} onSubmit={handleSubmit} />
   );
 }
 

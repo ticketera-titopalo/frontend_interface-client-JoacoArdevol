@@ -22,24 +22,24 @@ function ProfileEditor({ profile, fields, setFields, saveProfile, saving }) {
   </form>;
 }
 
-function ProfileView() {
-  const [profile, setProfile] = useState(null);
-  const [fields, setFields] = useState(emptyProfile);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [notice, setNotice] = useState(null);
-
+function useProfileLoader({ setProfile, setFields, setLoading, setNotice }) {
   useEffect(() => {
     let active = true;
     getMe().then((data) => {
       if (!active) return;
       setProfile(data);
       setFields(profileFields(data));
-    }).catch(() => { if (active) setNotice({ type: 'error', text: 'No pudimos cargar tu perfil.' }); })
-      .finally(() => { if (active) setLoading(false); });
+    }).catch(() => {
+      if (active) setNotice({ type: 'error', text: 'No pudimos cargar tu perfil.' });
+    }).finally(() => {
+      if (active) setLoading(false);
+    });
     return () => { active = false; };
-  }, []);
+  }, [setFields, setLoading, setNotice, setProfile]);
+}
 
+function useProfileSave({ fields, setProfile, setFields, setNotice }) {
+  const [saving, setSaving] = useState(false);
   async function saveProfile(event) {
     event.preventDefault();
     setSaving(true);
@@ -52,8 +52,22 @@ function ProfileView() {
     } catch (error) {
       const status = error.response?.status;
       setNotice({ type: 'error', text: getSaveErrorMessage(status) });
-    } finally { setSaving(false); }
+    } finally {
+      setSaving(false);
+    }
   }
+  return [saving, saveProfile];
+}
+
+function ProfileView() {
+  const [profile, setProfile] = useState(null);
+  const [fields, setFields] = useState(emptyProfile);
+  const [loading, setLoading] = useState(true);
+  const [notice, setNotice] = useState(null);
+
+  useProfileLoader({ setProfile, setFields, setLoading, setNotice });
+
+  const [saving, saveProfile] = useProfileSave({ fields, setProfile, setFields, setNotice });
 
   if (loading) return <main className="my-tickets-page"><Spinner label="Cargando perfil…" /></main>;
   return <main className="my-tickets-page">
