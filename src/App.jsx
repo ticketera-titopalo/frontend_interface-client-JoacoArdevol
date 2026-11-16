@@ -1,7 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 import RequireAuth from './components/RequireAuth';
-import { SessionProvider } from './hooks/SessionContext';
+import { SessionProvider } from './hooks/SessionContext.jsx';
 import LoginView from './views/LoginView';
 import RegisterView from './views/RegisterView';
 import HomeView from './views/HomeView';

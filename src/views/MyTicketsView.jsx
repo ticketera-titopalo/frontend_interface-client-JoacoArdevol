@@ -5,6 +5,16 @@ import { getMyTickets, getPurchaseTickets } from '../services/ticketService';
 import './MyTicketsView.css';
 import Spinner from '../components/Spinner';
 
+const getRequestKey = (purchaseId) => purchaseId || 'all';
+const getTickets = (request, key) => request.key === key ? request.tickets || [] : [];
+
+function TicketCollection({ purchaseId, loading, forbidden, tickets }) {
+  if (loading) return <Spinner label="Cargando entradas…" />;
+  if (forbidden) return <p role="alert">No tenés permiso para ver las entradas de esta compra.</p>;
+  if (!tickets.length) return <p>No encontramos entradas{purchaseId ? ' para esta compra' : ''}.</p>;
+  return <div className="my-tickets-list">{tickets.map((ticket) => <TicketCard key={ticket.id} ticket={ticket} />)}</div>;
+}
+
 function MyTicketsView() {
   const [searchParams, setSearchParams] = useSearchParams();
   const purchaseId = searchParams.get('purchase_id');
@@ -12,7 +22,7 @@ function MyTicketsView() {
 
   useEffect(() => {
     let active = true;
-    const key = purchaseId || 'all';
+    const key = getRequestKey(purchaseId);
     const loadTickets = purchaseId ? getPurchaseTickets(purchaseId) : getMyTickets();
     loadTickets
       .then((tickets) => { if (active) setRequest({ key, tickets, loading: false }); })
@@ -23,8 +33,9 @@ function MyTicketsView() {
     return () => { active = false; };
   }, [purchaseId]);
 
-  const loading = request.key !== (purchaseId || 'all') || request.loading;
-  const tickets = request.key === (purchaseId || 'all') ? request.tickets || [] : [];
+  const key = getRequestKey(purchaseId);
+  const loading = request.key !== key || request.loading;
+  const tickets = getTickets(request, key);
 
   return (
     <main className="my-tickets-page">
@@ -35,10 +46,7 @@ function MyTicketsView() {
         {purchaseId && <p>Entradas de la compra #{purchaseId}</p>}
       </header>
       {purchaseId && <button className="ticket-filter-clear" type="button" onClick={() => setSearchParams({})}>Ver todas mis entradas</button>}
-      {loading && <Spinner label="Cargando entradas…" />}
-      {!loading && request.forbidden && <p role="alert">No tenés permiso para ver las entradas de esta compra.</p>}
-      {!loading && !request.forbidden && !tickets.length && <p>No encontramos entradas{purchaseId ? ' para esta compra' : ''}.</p>}
-      {!loading && !request.forbidden && tickets.length > 0 && <div className="my-tickets-list">{tickets.map((ticket) => <TicketCard key={ticket.id} ticket={ticket} />)}</div>}
+      <TicketCollection purchaseId={purchaseId} loading={loading} forbidden={request.forbidden} tickets={tickets} />
     </main>
   );
 }

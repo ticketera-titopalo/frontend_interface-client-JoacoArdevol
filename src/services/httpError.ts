@@ -1,6 +1,19 @@
+type ErrorPayload = { message?: unknown; mensaje?: unknown; error?: unknown };
+
+function isObject(value: unknown): value is { response?: { data?: ErrorPayload } } {
+  return Boolean(value) && typeof value === 'object';
+}
+
+function firstMessage(data?: ErrorPayload) {
+  return data?.message || data?.mensaje || data?.error;
+}
+
+function usableMessage(message: unknown): message is string {
+  return typeof message === 'string' && Boolean(message.trim());
+}
+
 export function getErrorMessage(error: unknown, fallback: string) {
-  if (!error || typeof error !== 'object') return fallback;
-  const responseData = (error as { response?: { data?: { message?: unknown; mensaje?: unknown; error?: unknown } } }).response?.data;
-  const message = responseData?.message || responseData?.mensaje || responseData?.error;
-  return typeof message === 'string' && message.trim() ? message : fallback;
+  if (!isObject(error)) return fallback;
+  const message = firstMessage(error.response?.data);
+  return usableMessage(message) ? message : fallback;
 }
