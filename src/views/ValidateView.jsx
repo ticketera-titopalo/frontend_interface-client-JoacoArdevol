@@ -7,6 +7,12 @@ function getValidationErrorType(status) {
   return ({ 409: 'used', 404: 'missing' })[status] || 'error';
 }
 
+function getValidationFailure(error) {
+  const response = error.response;
+  const status = response?.status;
+  return { type: getValidationErrorType(status), message: response?.data?.message };
+}
+
 const errorMessages = {
   used: 'Esta entrada ya fue utilizada.',
   missing: 'No existe una entrada con ese código.',
@@ -36,6 +42,19 @@ function ValidationResult({ result }) {
   return message ? <p role="alert">{message} {result.message}</p> : null;
 }
 
+function ValidationForm({ code, setCode, loading, onSubmit }) {
+  return (
+      <form onSubmit={onSubmit}>
+        <label htmlFor="ticket-code">Código de ticket</label>
+        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+          <input id="ticket-code" autoFocus value={code} onChange={(event) => setCode(event.target.value)} placeholder="TKT-XXXXXX" style={{ flex: 1, padding: 12 }} />
+          <button type="submit" disabled={loading || !code.trim()}>{loading ? 'Validando…' : 'Validar'}</button>
+        </div>
+        <small>También podés usar un lector de códigos conectado al equipo.</small>
+      </form>
+  );
+}
+
 function ValidateView() {
   const [code, setCode] = useState('');
   const [result, setResult] = useState(null);
@@ -51,8 +70,7 @@ function ValidateView() {
       setResult({ type: 'valid', ticket });
       setCode('');
     } catch (error) {
-      const status = error.response?.status;
-      setResult({ type: getValidationErrorType(status), message: error.response?.data?.message });
+      setResult(getValidationFailure(error));
     } finally {
       setLoading(false);
     }
@@ -63,14 +81,7 @@ function ValidateView() {
     <main style={{ maxWidth: 640, margin: '50px auto', padding: '0 20px' }}>
       <Link to="/">← Volver a eventos</Link>
       <h1>Validar entrada</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="ticket-code">Código de ticket</label>
-        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-          <input id="ticket-code" autoFocus value={code} onChange={(event) => setCode(event.target.value)} placeholder="TKT-XXXXXX" style={{ flex: 1, padding: 12 }} />
-          <button type="submit" disabled={loading || !code.trim()}>{loading ? 'Validando…' : 'Validar'}</button>
-        </div>
-        <small>También podés usar un lector de códigos conectado al equipo.</small>
-      </form>
+      <ValidationForm code={code} setCode={setCode} loading={loading} onSubmit={handleSubmit} />
       {loading && <Spinner label="Validando entrada…" />}
       <ValidationResult result={result} />
     </main>

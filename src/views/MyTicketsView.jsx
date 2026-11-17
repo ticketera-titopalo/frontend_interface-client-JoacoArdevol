@@ -15,6 +15,19 @@ function TicketCollection({ purchaseId, loading, forbidden, tickets }) {
   return <div className="my-tickets-list">{tickets.map((ticket) => <TicketCard key={ticket.id} ticket={ticket} />)}</div>;
 }
 
+function TicketFilters({ purchaseId, setSearchParams }) {
+  return (
+    <>
+      <header className="my-tickets-heading">
+        <p className="purchase-kicker">TUS EXPERIENCIAS</p>
+        <h1>Mis Entradas</h1>
+        {purchaseId && <p>Entradas de la compra #{purchaseId}</p>}
+      </header>
+      {purchaseId && <button className="ticket-filter-clear" type="button" onClick={() => setSearchParams({})}>Ver todas mis entradas</button>}
+    </>
+  );
+}
+
 function MyTicketsView() {
   const [searchParams, setSearchParams] = useSearchParams();
   const purchaseId = searchParams.get('purchase_id');
@@ -40,12 +53,7 @@ function MyTicketsView() {
   return (
     <main className="my-tickets-page">
       <Link to="/" className="back-link">← Volver a la cartelera</Link>
-      <header className="my-tickets-heading">
-        <p className="purchase-kicker">TUS EXPERIENCIAS</p>
-        <h1>Mis Entradas</h1>
-        {purchaseId && <p>Entradas de la compra #{purchaseId}</p>}
-      </header>
-      {purchaseId && <button className="ticket-filter-clear" type="button" onClick={() => setSearchParams({})}>Ver todas mis entradas</button>}
+      <TicketFilters purchaseId={purchaseId} setSearchParams={setSearchParams} />
       <TicketCollection purchaseId={purchaseId} loading={loading} forbidden={request.forbidden} tickets={tickets} />
     </main>
   );

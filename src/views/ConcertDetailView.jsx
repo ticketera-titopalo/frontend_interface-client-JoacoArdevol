@@ -15,15 +15,43 @@ function getRequestErrorState(id, error) {
   return { id, notFound, error: !notFound, loading: false };
 }
 
+function isRequestLoading(request, id) {
+  return request.id !== id || request.loading;
+}
+
+function getCurrentConcert(request, id) {
+  if (request.id !== id) return null;
+  return request.concert;
+}
+
+function hasRequestError(request, concert) {
+  return Boolean(request.error || !concert);
+}
+
 function getRequestNotice(request, id) {
-  const loading = request.id !== id || request.loading;
-  const concert = request.id === id ? request.concert : null;
+  const loading = isRequestLoading(request, id);
+  const concert = getCurrentConcert(request, id);
+  const hasError = hasRequestError(request, concert);
   if (loading) return <main className="purchase-page"><Spinner label="Cargando concierto…" /></main>;
   if (request.notFound) return <main className="purchase-page"><h1>Concierto no encontrado</h1><Link to="/">Volver a la cartelera</Link></main>;
-  if (request.error || !concert) return <main className="purchase-page"><p role="alert">No pudimos cargar el concierto. Intentá nuevamente más tarde.</p><Link to="/">Volver a la cartelera</Link></main>;
+  if (hasError) return <main className="purchase-page"><p role="alert">No pudimos cargar el concierto. Intentá nuevamente más tarde.</p><Link to="/">Volver a la cartelera</Link></main>;
   return null;
 }
 
+function ConcertContent({ concert }) {
+  return (
+    <main className="purchase-page concert-detail-page">
+      <Link to="/" className="back-link">&#8592; Volver a la cartelera</Link>
+      {concert.image_url && <img className="concert-detail-image" src={concert.image_url} alt={concert.name} />}
+      <header className="purchase-header">
+        <p className="purchase-kicker">DETALLE DEL CONCIERTO</p>
+        <h1>{concert.name}</h1>
+        <p>{new Intl.DateTimeFormat('es-AR', { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(concert.date))}</p>
+        <p>{concert.description}</p>
+      </header>
+    </main>
+  );
+}
 function ConcertDetailView() {
   const { id } = useParams();
   const { user } = useSession();
@@ -46,16 +74,7 @@ function ConcertDetailView() {
 
   return (
     <>
-      <main className="purchase-page concert-detail-page">
-        <Link to="/" className="back-link">← Volver a la cartelera</Link>
-        {concert.image_url && <img className="concert-detail-image" src={concert.image_url} alt={concert.name} />}
-        <header className="purchase-header">
-          <p className="purchase-kicker">DETALLE DEL CONCIERTO</p>
-          <h1>{concert.name}</h1>
-          <p>{new Intl.DateTimeFormat('es-AR', { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(concert.date))}</p>
-          <p>{concert.description}</p>
-        </header>
-      </main>
+      <ConcertContent concert={concert} />
       <EventPurchase event={concert} id={id} user={user} />
     </>
   );
