@@ -5,24 +5,27 @@ import { getMyTickets, getPurchaseTickets } from '../services/ticketService';
 import './MyTicketsView.css';
 import Spinner from '../components/Spinner';
 
-function PurchaseFilter({ purchaseId, onClear }) {
-  if (!purchaseId) return null;
-  return <button className="ticket-filter-clear" type="button" onClick={onClear}>Ver todas mis entradas</button>;
-}
+const getRequestKey = (purchaseId) => purchaseId || 'all';
+const getTickets = (request, key) => request.key === key ? request.tickets || [] : [];
 
-function TicketsHeading({ purchaseId }) {
-  return <header className="my-tickets-heading">
-    <p className="purchase-kicker">TUS EXPERIENCIAS</p>
-    <h1>Mis Entradas</h1>
-    {purchaseId && <p>Entradas de la compra #{purchaseId}</p>}
-  </header>;
-}
-
-function TicketsContent({ loading, forbidden, tickets, purchaseId }) {
+function TicketCollection({ purchaseId, loading, forbidden, tickets }) {
   if (loading) return <Spinner label="Cargando entradas…" />;
   if (forbidden) return <p role="alert">No tenés permiso para ver las entradas de esta compra.</p>;
-  if (tickets.length === 0) return <p>No encontramos entradas{purchaseId ? ' para esta compra' : ''}.</p>;
+  if (!tickets.length) return <p>No encontramos entradas{purchaseId ? ' para esta compra' : ''}.</p>;
   return <div className="my-tickets-list">{tickets.map((ticket) => <TicketCard key={ticket.id} ticket={ticket} />)}</div>;
+}
+
+function TicketFilters({ purchaseId, setSearchParams }) {
+  return (
+    <>
+      <header className="my-tickets-heading">
+        <p className="purchase-kicker">TUS EXPERIENCIAS</p>
+        <h1>Mis Entradas</h1>
+        {purchaseId && <p>Entradas de la compra #{purchaseId}</p>}
+      </header>
+      {purchaseId && <button className="ticket-filter-clear" type="button" onClick={() => setSearchParams({})}>Ver todas mis entradas</button>}
+    </>
+  );
 }
 
 function MyTicketsView() {
@@ -32,7 +35,7 @@ function MyTicketsView() {
 
   useEffect(() => {
     let active = true;
-    const key = purchaseId || 'all';
+    const key = getRequestKey(purchaseId);
     const loadTickets = purchaseId ? getPurchaseTickets(purchaseId) : getMyTickets();
     loadTickets
       .then((tickets) => { if (active) setRequest({ key, tickets, loading: false }); })
@@ -43,15 +46,15 @@ function MyTicketsView() {
     return () => { active = false; };
   }, [purchaseId]);
 
-  const loading = request.key !== (purchaseId || 'all') || request.loading;
-  const tickets = request.key === (purchaseId || 'all') ? request.tickets || [] : [];
+  const key = getRequestKey(purchaseId);
+  const loading = request.key !== key || request.loading;
+  const tickets = getTickets(request, key);
 
   return (
     <main className="my-tickets-page">
       <Link to="/" className="back-link">← Volver a la cartelera</Link>
-      <TicketsHeading purchaseId={purchaseId} />
-      <PurchaseFilter purchaseId={purchaseId} onClear={() => setSearchParams({})} />
-      <TicketsContent loading={loading} forbidden={request.forbidden} tickets={tickets} purchaseId={purchaseId} />
+      <TicketFilters purchaseId={purchaseId} setSearchParams={setSearchParams} />
+      <TicketCollection purchaseId={purchaseId} loading={loading} forbidden={request.forbidden} tickets={tickets} />
     </main>
   );
 }

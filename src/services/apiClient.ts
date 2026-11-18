@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { type AxiosError } from 'axios';
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL?.replace(/\/+$/, ''),
@@ -16,23 +16,47 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-apiClient.interceptors.response.use((response) => response, (error: unknown) => {
-  if (!axios.isAxiosError(error)) return Promise.reject(error);
+function isPublicAuthRequest(endpoint: string): boolean {
+  return /\/auth\/(login|register|logout)/.test(endpoint);
+}
+
+function clearExpiredSession(): void {
+  window.localStorage.removeItem('entrada-token');
+  window.localStorage.removeItem('entrada-refresh-token');
+  window.localStorage.removeItem('entrada-user');
+  window.sessionStorage.setItem('entrada-global-toast', 'Sesi\u00f3n expirada, vuelve a iniciar sesi\u00f3n');
+  if (window.location.pathname !== '/login') window.location.assign('/login');
+}
+
+function isServerError(status?: number): boolean {
+  if (status === undefined) return false;
+  return status >= 500;
+}
+
+function isExpiredSessionError(error: AxiosError): boolean {
   const status = error.response?.status;
   const endpoint = error.config?.url || '';
-  if (status === 401 && !/\/auth\/(login|register|logout)/.test(endpoint)) {
-    window.localStorage.removeItem('entrada-token');
-    window.localStorage.removeItem('entrada-refresh-token');
-    window.localStorage.removeItem('entrada-user');
-    window.sessionStorage.setItem('entrada-global-toast', 'Sesión expirada, vuelve a iniciar sesión');
-    if (window.location.pathname !== '/login') window.location.assign('/login');
-  } else if (status === 403) {
-    notify('No tenés permiso para realizar esta acción.', 'error');
-  } else if (status && status >= 500) {
-    notify('Error del servidor, inténtalo de nuevo', 'error');
-  } else if (!error.response) {
-    notify('No hay conexión a internet', 'error');
+  return status === 401 && !isPublicAuthRequest(endpoint);
+}
+
+function handleOtherAxiosErrors(error: AxiosError): void {
+  const status = error.response?.status;
+  if (status === 403) notify('No ten\u00e9s permiso para realizar esta acci\u00f3n.', 'error');
+  if (isServerError(status)) notify('Error del servidor, int\u00e9ntalo de nuevo', 'error');
+  if (!error.response) notify('No hay conexi\u00f3n a internet', 'error');
+}
+
+function handleAxiosResponseError(error: unknown): void {
+  if (!axios.isAxiosError(error)) return;
+  if (isExpiredSessionError(error)) {
+    clearExpiredSession();
+    return;
   }
+  handleOtherAxiosErrors(error);
+}
+
+apiClient.interceptors.response.use((response) => response, (error: unknown) => {
+  handleAxiosResponseError(error);
   return Promise.reject(error);
 });
 

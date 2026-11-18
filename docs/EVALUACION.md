@@ -3,21 +3,22 @@
 
 > Documento **generado automáticamente** por la cátedra de Programación III (RepoSense + análisis de calidad + constancia). **No editar a mano**: se regenera en cada evaluación.
 > Rama evaluada: `main`. Análisis **heurístico** (regex + métricas): es una criba para orientar la revisión, **no una nota**.
-> Generado: 2026-11-05.
+> Generado: 2026-11-18.
 
 ## 1. Veredicto
 
 | Aspecto | Resultado |
 |---|---|
 | Tipo de proyecto | frontend |
-| Índice de calidad de servicios | **61/100** (mínimo 50) |
-| Criterios cumplidos | **13/14** |
+| Índice de calidad de servicios | **100/100** (mínimo 50) |
+| Criterios cumplidos | **14/14** |
 | Aprobado (semáforo) | **SI** |
-| Código (LOC) | 959 |
-| Archivos de código | 33 |
+| Código (LOC) | 1,318 |
+| Archivos de código | 34 |
 | Tests (archivos) | 7 |
 | Cobertura de líneas | no aplica (frontend sin herramienta de cobertura E2E) |
 | Capas detectadas | vistas, servicios, estado |
+| Pushes directos a `main` (sin PR) | 0 |
 
 > **Aprobado** exige las compuertas críticas (**SEC**, **SQL**, **capas**, **índice ≥ 50** y **cobertura ≥ 80 %** cuando aplica) y tolera hasta **3 criterios en rojo** (12/15). No es una nota: sirve para ordenar y priorizar la revisión.
 
@@ -25,7 +26,7 @@
 
 | Autor | Commits | Código (LOC) | Tests (LOC) | Docs (LOC) | Días activos | % del código |
 |---|---:|---:|---:|---:|---:|---:|
-| joaquin ardevol | 15 | 1,332 | 124 | 8 | 9 | 100% |
+| joaquin ardevol | 18 | 1,772 | 124 | 8 | 12 | 100% |
 
 > _El LOC de autoría lo calcula RepoSense sobre el historial y puede diferir del LOC de código del análisis de calidad (que mira solo el estado de `main`)._
 
@@ -35,7 +36,7 @@
 
 | Alumno | Sesiones | Cumplimiento | Pausa | Recencia | IC | Nivel | Para subir de nivel |
 |---|--:|--:|--:|--:|--:|--|--|
-| joaquin ardevol | 6 | 26% | 42 d | 57% | **25** | No aprueba | Cumplimiento 26% (mín. 50%) |
+| joaquin ardevol | 12 | 43% | 42 d | 93% | **41** | No aprueba | Cumplimiento 43% (mín. 50%) |
 
 > Para aprobar el IC: **2 sesiones por semana** sostenidas, sin pausas mayores a **10 días** y con actividad en las **últimas 2 semanas**. Se excluyen merges, bots y al docente. Zona horaria UTC-3.
 
@@ -47,7 +48,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Un resumen numérico (0-100) que combina todas las señales y métricas del análisis, con topes duros por duplicación.
 - **Por qué importa:** Ordena y prioriza la revisión: un índice bajo indica varias señales que conviene mirar juntas.
-- **Tu resultado:** índice **61/100** _(mínimo 50)_
+- **Tu resultado:** índice **100/100** _(mínimo 50)_
 
 ### 2. Duplicación (DRY) (duplicacion) — OK
 
@@ -103,21 +104,17 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 - **Por qué importa:** Una unidad que cambia por motivos distintos es frágil y cuesta entenderla.
 - **Tu resultado:** **0** unidad(es) con baja cohesión _(máximo 0)_
 
-### 11. Complejidad alta (Compl) — A REVISAR
+### 11. Complejidad alta (Compl) — OK
 
 - **Qué mide:** Complejidad ciclomática: cantidad de caminos posibles dentro de una función (condicionales, bucles, casos).
 - **Por qué importa:** Muchos caminos = difícil de seguir y de probar; suelen esconderse casos sin cubrir.
-- **Tu resultado:** **10** bloque(s) de complejidad alta _(máximo 5 por 1000 LOC (tenés 959 LOC))_
-- **Para investigar la causa:**
-    - ¿Se agregaron condiciones a medida que aparecían casos nuevos?
-    - ¿Se probaron todos los caminos o solo el caso principal?
-    - ¿Hay reglas de negocio mezcladas con detalles técnicos?
+- **Tu resultado:** **3** bloque(s) de complejidad alta _(máximo 5 por 1000 LOC (tenés 1318 LOC))_
 
 ### 12. Funciones/métodos largos o con muchos parámetros (Tam) — OK
 
 - **Qué mide:** Tamaño de las funciones/métodos y cantidad de parámetros.
 - **Por qué importa:** Una función que hace varias cosas cuesta leerla, nombrarla y reutilizarla.
-- **Tu resultado:** **7** función/método(s) largos o con muchos parámetros _(máximo 10 por 1000 LOC)_
+- **Tu resultado:** **5** función/método(s) largos o con muchos parámetros _(máximo 10 por 1000 LOC)_
 
 ### 13. Acoplamiento alto (Acop) — OK
 
@@ -133,26 +130,102 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 ## 5. Observaciones y qué falta
 
-**Aprobado con observaciones.** Estos criterios quedan en rojo (se permiten hasta **3** sin que sean compuertas críticas), así que no bloquean la aprobación pero conviene corregirlos:
+_Cumple **todos** los criterios del semáforo: no hay nada que arreglar para aprobar. El siguiente objetivo es sostenerlo y mejorar duplicación y diseño._
 
-| Criterio | Resultado actual | Meta | Brecha | Cómo alcanzarlo |
-|---|---|---|---|---|
-| Complejidad alta (Compl) | **10** bloque(s) de complejidad alta | máximo 5 por 1000 LOC (tenés 959 LOC) | 10 hallazgo(s); el máximo para 959 LOC es 4.8 | Extraé condiciones y ramas a funciones con nombre propio, usá retornos tempranos y evitá anidar `if`/`switch`. Meta: ≤5 bloques por 1000 LOC. |
+## 6. Actividad en clase y fuera de clase
 
-## 6. Anexo: dónde mirar
+> Se consideran las **28 clases** del período (miércoles y viernes, según `config/constancia.json`; feriados y semanas sin clase descontados). Para cada alumno se muestra la actividad **en cada clase** y también la actividad **fuera de los días de clase** (fines de semana u otros días). `Commits` = commits de trabajo (no-merge); `Merges` = merges de PR (también son push). Los días sin actividad dicen **sin actividad**.
 
-Archivos donde el análisis encontró cada señal en rojo (sin número de línea, a propósito):
+### joaquin ardevol
 
-**Complejidad alta (Compl)** — 8 archivo(s):
-- `src/services/httpError.ts`
-- `src/views/ConcertDetailView.jsx`
-- `src/views/HomeView.jsx`
-- `src/views/LoginView.jsx`
-- `src/views/MyTicketsView.jsx`
-- `src/views/ProfileView.jsx`
-- `src/views/TicketLookupView.jsx`
-- `src/views/ValidateView.jsx`
+**12/28 clases con actividad** · total del período: 30 commits · 29 merges
+
+| Fecha | Actividad | Repositorios | Commits / merges |
+|---|:--:|---|--:|
+| 2026-08-14 | No | sin actividad | 0 / 0 |
+| 2026-08-19 | **Sí** | frontend_interface-client-JoacoArdevol | 1 / 0 |
+| 2026-08-21 | **Sí** | frontend_interface-client-JoacoArdevol | 1 / 0 |
+| 2026-08-26 | No | sin actividad | 0 / 0 |
+| 2026-08-28 | No | sin actividad | 0 / 0 |
+| 2026-09-02 | **Sí** | frontend_interface-client-JoacoArdevol | 1 / 2 |
+| 2026-09-04 | No | sin actividad | 0 / 0 |
+| 2026-09-09 | No | sin actividad | 0 / 0 |
+| 2026-09-11 | No | sin actividad | 0 / 0 |
+| 2026-09-16 | No | sin actividad | 0 / 0 |
+| 2026-09-18 | No | sin actividad | 0 / 0 |
+| 2026-09-23 | No | sin actividad | 0 / 0 |
+| 2026-09-25 | No | sin actividad | 0 / 0 |
+| 2026-09-30 | **Sí** | frontend_interface-client-JoacoArdevol | 1 / 1 |
+| 2026-10-02 | No | sin actividad | 0 / 0 |
+| 2026-10-07 | No | sin actividad | 0 / 0 |
+| 2026-10-09 | No | sin actividad | 0 / 0 |
+| 2026-10-14 | No | sin actividad | 0 / 0 |
+| 2026-10-16 | **Sí** | frontend_interface-client-JoacoArdevol | 2 / 1 |
+| 2026-10-21 | **Sí** | frontend_interface-client-JoacoArdevol | 1 / 2 |
+| 2026-10-23 | **Sí** | frontend_interface-client-JoacoArdevol | 0 / 2 |
+| 2026-10-28 | **Sí** | frontend_interface-client-JoacoArdevol | 5 / 4 |
+| 2026-10-30 | **Sí** | frontend_interface-client-JoacoArdevol | 7 / 5 |
+| 2026-11-04 | No | sin actividad | 0 / 0 |
+| 2026-11-06 | **Sí** | frontend_interface-client-JoacoArdevol | 1 / 3 |
+| 2026-11-11 | **Sí** | frontend-interface-administracion-joacoardevol | 9 / 8 |
+| 2026-11-13 | **Sí** | frontend-interface-administracion-joacoardevol | 1 / 1 |
+| 2026-11-18 | No | sin actividad | 0 / 0 |
+
+**Fuera de clase:** 3 fecha(s) con actividad · 5 commits · 5 merges
+
+| Fecha | Repositorios | Commits / merges |
+|---|---|--:|
+| 2026-11-15 | frontend-interface-administracion-joacoardevol, frontend_interface-client-JoacoArdevol | 2 / 0 |
+| 2026-11-16 | frontend-interface-administracion-joacoardevol, frontend_interface-client-JoacoArdevol | 2 / 3 |
+| 2026-11-17 | frontend-interface-administracion-joacoardevol | 1 / 2 |
+
+### palojunent
+
+**15/28 clases con actividad** · total del período: 43 commits · 32 merges
+
+| Fecha | Actividad | Repositorios | Commits / merges |
+|---|:--:|---|--:|
+| 2026-08-14 | No | sin actividad | 0 / 0 |
+| 2026-08-19 | **Sí** | backend-interfaz-de-cliente--palomaju-ent | 1 / 0 |
+| 2026-08-21 | No | sin actividad | 0 / 0 |
+| 2026-08-26 | No | sin actividad | 0 / 0 |
+| 2026-08-28 | No | sin actividad | 0 / 0 |
+| 2026-09-02 | **Sí** | backend-interfaz-de-cliente--palomaju-ent | 2 / 2 |
+| 2026-09-04 | **Sí** | backend-interfaz-de-cliente--palomaju-ent | 2 / 0 |
+| 2026-09-09 | **Sí** | backend-interfaz-de-cliente--palomaju-ent | 1 / 3 |
+| 2026-09-11 | No | sin actividad | 0 / 0 |
+| 2026-09-16 | No | sin actividad | 0 / 0 |
+| 2026-09-18 | No | sin actividad | 0 / 0 |
+| 2026-09-23 | No | sin actividad | 0 / 0 |
+| 2026-09-25 | No | sin actividad | 0 / 0 |
+| 2026-09-30 | **Sí** | backend-interfaz-de-cliente--palomaju-ent | 0 / 1 |
+| 2026-10-02 | No | sin actividad | 0 / 0 |
+| 2026-10-07 | **Sí** | backend-interfaz-de-cliente--palomaju-ent | 1 / 1 |
+| 2026-10-09 | **Sí** | backend-interfaz-de-cliente--palomaju-ent | 1 / 1 |
+| 2026-10-14 | **Sí** | backend-interfaz-de-cliente--palomaju-ent | 3 / 3 |
+| 2026-10-16 | **Sí** | backend-interfaz-de-cliente--palomaju-ent | 4 / 3 |
+| 2026-10-21 | No | sin actividad | 0 / 0 |
+| 2026-10-23 | **Sí** | backend-interfaz-de-cliente--palomaju-ent | 0 / 1 |
+| 2026-10-28 | **Sí** | backend-interfaz-de-cliente--palomaju-ent | 3 / 3 |
+| 2026-10-30 | **Sí** | backend-interfaz-de-administraci-n-palomajunent | 4 / 1 |
+| 2026-11-04 | No | sin actividad | 0 / 0 |
+| 2026-11-06 | **Sí** | backend-interfaz-de-administraci-n-palomajunent | 14 / 8 |
+| 2026-11-11 | **Sí** | backend-interfaz-de-administraci-n-palomajunent | 4 / 4 |
+| 2026-11-13 | **Sí** | backend-interfaz-de-administraci-n-palomajunent | 3 / 1 |
+| 2026-11-18 | No | sin actividad | 0 / 0 |
+
+**Fuera de clase:** 3 fecha(s) con actividad · 5 commits · 10 merges
+
+| Fecha | Repositorios | Commits / merges |
+|---|---|--:|
+| 2026-11-12 | backend-interfaz-de-administraci-n-palomajunent, backend-interfaz-de-cliente--palomaju-ent | 3 / 4 |
+| 2026-11-14 | backend-interfaz-de-administraci-n-palomajunent | 2 / 3 |
+| 2026-11-15 | backend-interfaz-de-administraci-n-palomajunent | 0 / 3 |
+
+## 7. Anexo: archivos donde se originan los problemas
+
+_No hay criterios en rojo: no hay archivos que corregir._
 
 ---
-_Informe generado por la cátedra. Los umbrales corresponden al perfil `exigente`. Ante dudas, revisá el archivo señalado y el criterio en `CRITERIOS-CALIDAD.md`._
+_Informe generado por la cátedra. Los umbrales corresponden al perfil `exigente`. Ante dudas, revisá el archivo y la línea señalados y el criterio en `CRITERIOS-CALIDAD.md`._
 <!-- evaluacion:fin -->
