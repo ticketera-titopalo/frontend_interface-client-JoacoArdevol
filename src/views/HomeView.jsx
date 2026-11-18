@@ -16,7 +16,10 @@ function HomeView() {
   useEffect(() => {
     let active = true;
     getConcerts()
-      .then((data) => { if (active) setConcerts(data.concerts); })
+      .then((data) => {
+        const items = Array.isArray(data) ? data : data?.concerts;
+        if (active) setConcerts(Array.isArray(items) ? items : []);
+      })
       .catch(() => { if (active) setConcertsError(true); })
       .finally(() => { if (active) setConcertsLoading(false); });
     return () => { active = false; };
@@ -51,7 +54,7 @@ function HomeView() {
       </section>
 
       <section className="trust-strip" id="experiencias"><p>Más que una entrada: una experiencia completa.</p><div><span>✓ Compra segura</span><span>✦ Beneficios exclusivos</span><span>◎ Soporte cuando lo necesitás</span></div></section>
-      <footer id="ayuda"><span>© 2026 entrada.</span><span className={`connection ${status}`}><i />{status === 'checking' && 'Conectando…'}{status === 'ok' && (statusData?.message || 'Servicio disponible')}{status === 'error' && 'Servicio sin conexión'}</span></footer>
+      <footer id="ayuda"><span>© 2026 entrada.</span><span>Entradas seguras para experiencias en vivo</span></footer>
     </main>
   );
 }
