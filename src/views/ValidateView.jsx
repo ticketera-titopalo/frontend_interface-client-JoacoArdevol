@@ -3,6 +3,58 @@ import { Link } from 'react-router-dom';
 import { validate } from '../services/validateService';
 import Spinner from '../components/Spinner';
 
+function getValidationErrorType(status) {
+  return ({ 409: 'used', 404: 'missing' })[status] || 'error';
+}
+
+function getValidationFailure(error) {
+  const response = error.response;
+  const status = response?.status;
+  return { type: getValidationErrorType(status), message: response?.data?.message };
+}
+
+const errorMessages = {
+  used: 'Esta entrada ya fue utilizada.',
+  missing: 'No existe una entrada con ese código.',
+  error: 'No se pudo validar la entrada.',
+};
+
+function firstValue(...values) {
+  return values.find(Boolean);
+}
+
+function getDisplayValue(item) {
+  if (!item || typeof item !== 'object') return item;
+  return firstValue(item.name, item.nombre, item.email);
+}
+
+function ValidTicketResult({ ticket }) {
+  const owner = firstValue(ticket.propietario, ticket.owner, ticket.user);
+  const concert = firstValue(ticket.concierto, ticket.concert, ticket.event);
+  const time = firstValue(ticket.validated_at, ticket.validatedAt, ticket.hora);
+  return <p role="status">✅ Validada — {getDisplayValue(owner) || 'Propietario sin datos'} · {getDisplayValue(concert) || 'Concierto sin datos'} · {time || 'Hora no disponible'}</p>;
+}
+
+function ValidationResult({ result }) {
+  if (!result) return null;
+  if (result.type === 'valid') return <ValidTicketResult ticket={result.ticket || {}} />;
+  const message = errorMessages[result.type];
+  return message ? <p role="alert">{message} {result.message}</p> : null;
+}
+
+function ValidationForm({ code, setCode, loading, onSubmit }) {
+  return (
+      <form onSubmit={onSubmit}>
+        <label htmlFor="ticket-code">Código de ticket</label>
+        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+          <input id="ticket-code" autoFocus value={code} onChange={(event) => setCode(event.target.value)} placeholder="TKT-XXXXXX" style={{ flex: 1, padding: 12 }} />
+          <button type="submit" disabled={loading || !code.trim()}>{loading ? 'Validando…' : 'Validar'}</button>
+        </div>
+        <small>También podés usar un lector de códigos conectado al equipo.</small>
+      </form>
+  );
+}
+
 function ValidateView() {
   const [code, setCode] = useState('');
   const [result, setResult] = useState(null);
@@ -18,36 +70,20 @@ function ValidateView() {
       setResult({ type: 'valid', ticket });
       setCode('');
     } catch (error) {
-      const status = error.response?.status;
-      setResult({ type: status === 409 ? 'used' : status === 404 ? 'missing' : 'error', message: error.response?.data?.message });
+      setResult(getValidationFailure(error));
     } finally {
       setLoading(false);
     }
   }
 
-  const data = result?.ticket || {};
-  const owner = data.propietario || data.owner || data.user;
-  const concert = data.concierto || data.concert || data.event;
-  const time = data.validated_at || data.validatedAt || data.hora;
-  const value = (item) => typeof item === 'object' && item ? item.name || item.nombre || item.email : item;
 
   return (
     <main style={{ maxWidth: 640, margin: '50px auto', padding: '0 20px' }}>
       <Link to="/">← Volver a eventos</Link>
       <h1>Validar entrada</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="ticket-code">Código de ticket</label>
-        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-          <input id="ticket-code" autoFocus value={code} onChange={(event) => setCode(event.target.value)} placeholder="TKT-XXXXXX" style={{ flex: 1, padding: 12 }} />
-          <button type="submit" disabled={loading || !code.trim()}>{loading ? 'Validando…' : 'Validar'}</button>
-        </div>
-        <small>También podés usar un lector de códigos conectado al equipo.</small>
-      </form>
+      <ValidationForm code={code} setCode={setCode} loading={loading} onSubmit={handleSubmit} />
       {loading && <Spinner label="Validando entrada…" />}
-      {result?.type === 'valid' && <p role="status">✅ Validada — {value(owner) || 'Propietario sin datos'} · {value(concert) || 'Concierto sin datos'} · {time || 'Hora no disponible'}</p>}
-      {result?.type === 'used' && <p role="alert">Esta entrada ya fue utilizada. {result.message}</p>}
-      {result?.type === 'missing' && <p role="alert">No existe una entrada con ese código. {result.message}</p>}
-      {result?.type === 'error' && <p role="alert">No se pudo validar la entrada. {result.message}</p>}
+      <ValidationResult result={result} />
     </main>
   );
 }
