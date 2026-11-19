@@ -3,7 +3,7 @@
 
 > Documento **generado automáticamente** por la cátedra de Programación III (RepoSense + análisis de calidad + constancia). **No editar a mano**: se regenera en cada evaluación.
 > Rama evaluada: `main`. Análisis **heurístico** (regex + métricas): es una criba para orientar la revisión, **no una nota**.
-> Generado: 2026-11-18.
+> Generado: 2026-11-19.
 
 ## 1. Veredicto
 
@@ -13,7 +13,7 @@
 | Índice de calidad de servicios | **100/100** (mínimo 50) |
 | Criterios cumplidos | **14/14** |
 | Aprobado (semáforo) | **SI** |
-| Código (LOC) | 1,318 |
+| Código (LOC) | 1,283 |
 | Archivos de código | 34 |
 | Tests (archivos) | 7 |
 | Cobertura de líneas | no aplica (frontend sin herramienta de cobertura E2E) |
@@ -26,7 +26,7 @@
 
 | Autor | Commits | Código (LOC) | Tests (LOC) | Docs (LOC) | Días activos | % del código |
 |---|---:|---:|---:|---:|---:|---:|
-| joaquin ardevol | 18 | 1,772 | 124 | 8 | 12 | 100% |
+| joaquin ardevol | 21 | 1,733 | 124 | 8 | 13 | 100% |
 
 > _El LOC de autoría lo calcula RepoSense sobre el historial y puede diferir del LOC de código del análisis de calidad (que mira solo el estado de `main`)._
 
@@ -36,7 +36,7 @@
 
 | Alumno | Sesiones | Cumplimiento | Pausa | Recencia | IC | Nivel | Para subir de nivel |
 |---|--:|--:|--:|--:|--:|--|--|
-| joaquin ardevol | 12 | 43% | 42 d | 93% | **41** | No aprueba | Cumplimiento 43% (mín. 50%) |
+| joaquin ardevol | 13 | 46% | 42 d | 93% | **43** | No aprueba | Cumplimiento 46% (mín. 50%) |
 
 > Para aprobar el IC: **2 sesiones por semana** sostenidas, sin pausas mayores a **10 días** y con actividad en las **últimas 2 semanas**. Se excluyen merges, bots y al docente. Zona horaria UTC-3.
 
@@ -108,13 +108,13 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Complejidad ciclomática: cantidad de caminos posibles dentro de una función (condicionales, bucles, casos).
 - **Por qué importa:** Muchos caminos = difícil de seguir y de probar; suelen esconderse casos sin cubrir.
-- **Tu resultado:** **3** bloque(s) de complejidad alta _(máximo 5 por 1000 LOC (tenés 1318 LOC))_
+- **Tu resultado:** **5** bloque(s) de complejidad alta _(máximo 5 por 1000 LOC (tenés 1283 LOC))_
 
 ### 12. Funciones/métodos largos o con muchos parámetros (Tam) — OK
 
 - **Qué mide:** Tamaño de las funciones/métodos y cantidad de parámetros.
 - **Por qué importa:** Una función que hace varias cosas cuesta leerla, nombrarla y reutilizarla.
-- **Tu resultado:** **5** función/método(s) largos o con muchos parámetros _(máximo 10 por 1000 LOC)_
+- **Tu resultado:** **6** función/método(s) largos o con muchos parámetros _(máximo 10 por 1000 LOC)_
 
 ### 13. Acoplamiento alto (Acop) — OK
 
@@ -138,7 +138,7 @@ _Cumple **todos** los criterios del semáforo: no hay nada que arreglar para apr
 
 ### joaquin ardevol
 
-**12/28 clases con actividad** · total del período: 30 commits · 29 merges
+**13/28 clases con actividad** · total del período: 32 commits · 33 merges
 
 | Fecha | Actividad | Repositorios | Commits / merges |
 |---|:--:|---|--:|
@@ -169,7 +169,7 @@ _Cumple **todos** los criterios del semáforo: no hay nada que arreglar para apr
 | 2026-11-06 | **Sí** | frontend_interface-client-JoacoArdevol | 1 / 3 |
 | 2026-11-11 | **Sí** | frontend-interface-administracion-joacoardevol | 9 / 8 |
 | 2026-11-13 | **Sí** | frontend-interface-administracion-joacoardevol | 1 / 1 |
-| 2026-11-18 | No | sin actividad | 0 / 0 |
+| 2026-11-18 | **Sí** | frontend_interface-client-JoacoArdevol | 2 / 4 |
 
 **Fuera de clase:** 3 fecha(s) con actividad · 5 commits · 5 merges
 
